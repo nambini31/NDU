@@ -1,0 +1,63 @@
+﻿@model BatchAndDocumentViewModel
+
+@section PageScripts
+{
+            <script type="text/javascript">
+                var batchstep = @ViewBag.step;
+                var batchidclick = '@(ViewBag.batchid)';
+                var imageextension = '@(ViewBag.imageextension)';
+            </script>
+
+            <script src="~/EDMS/js/app.js"></script>
+            <script type="text/javascript" src="~/EDMS/js/@(ViewBag.scripts).js"></script>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box"> 
+
+            <input type="hidden" id="filenumbername" value="@Model?.Batch?.FileNumber" />
+
+            <div class="box-body">
+                <div>
+                    <div class="form-inline">
+                        <button type="button" style="margin-bottom:6px" class="btn btn-info refresh" id="refresh"  style="position: relative;float: left;" title="Refresh"><i class="fa fa-refresh"></i></button>
+                        <button type="button" class="btn btn-success form-control" disabled id="saveordereddocuments" style="position: relative;float: right;" >save ordered documents <i class="fa fa-save"></i> </button>
+
+                    </div>
+
+                    
+
+                </div>
+                <table id="table_document_index_crop_sanity_control_order" class="table table-bordered table-responsive nowrap w-100" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>Document Number</th>
+                            <th>Sheets(Pages)</th>
+                            <th>Last step</th>
+                            <th>Last step on</th>
+                            <th>Type</th>
+                            <th>Created On</th>
+                            <th>Status</th>
+                            <th style='text-align:center ; max-width:30px'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="Showdocumentindex" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="padding-left: 0px !important;overflow: auto;">
+    </div> 
+    
+    
+
+

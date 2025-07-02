@@ -1,0 +1,161 @@
+﻿@model BatchAndCodeRejectViewModel
+
+@foreach (var item in Model.Batch)
+{
+    var styletd = "padding-top: 1.1rem;padding-bottom: 0.7rem;";
+    var style = "";
+    var statut = "yes";
+    @if (item.StatusId == 2 || item.StatusId == 5)
+    {
+        statut = "no";
+        style = "background-color: #ff000033;";
+    }
+
+    var exp = "nonexport";
+    if (item.ExportStatus == 1)
+    {
+        style = "background-color: #4aff4a73;";
+        exp = "export";
+    }
+
+    var last = "";
+    var lastby = "";
+
+    @switch (item.LastStep)
+    {
+
+        case "Reviewed":
+            last = item.ReviewedOn.HasValue ? item.ReviewedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ReviewedBy;
+            break;
+        case "Quality":
+            last = item.QualityOn.HasValue ? item.QualityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.QualityBy;
+
+            break;
+        case "Rescan":
+            last = item.RescanOn.HasValue ? item.RescanOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.RescanBy;
+            break;
+        case "Indexing":
+            last = item.IndexedOn.HasValue ? item.IndexedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.IndexedBy;
+            item.LastStep = "Indexed";
+            break;
+        case "Sanity":
+            last = item.SanityOn.HasValue ? item.SanityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.SanityBy;
+            break;
+        default:
+            last = item.ScannedOn.HasValue ? item.ScannedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ScannedBy;
+            break;
+    }
+
+
+        <tr style="@(style)" class="@(statut) @(exp)">
+                <td style='text-align:left ; min-width:150px; @styletd'>@item.BatchNumber</td>
+                <td style='text-align:left ; min-width:150px; @styletd'>@item.FileNumber</td>
+                    <td style='text-align:left ; min-width:80px; @styletd'>@item.NumberOfDocument (@item.NumberOfPages)</td>
+                <td style='text-align:left ; min-width:150px; @styletd'>@(item.ScannedOn.HasValue ? item.ScannedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "")</td>
+                <td style="@styletd">@item.LastStep by @lastby</td>
+                <td style="@styletd">@last</td>
+                <td style='text-align:left ; min-width:80px; @styletd'>
+
+
+            @if (item.StatusId == 5 || item.StatusId == 6)
+            {
+                        <a href="#" class="view-full-text" data-toggle="modal" data-target="#textModal" data-fulltext1="@item.ReasonOther" data-fulltext="@item.RejectName">@item.StatusName</a>
+            }
+            else
+            {
+
+                @item.StatusName
+            }
+
+
+            </td>
+                <td style='text-align:left ; min-width:100px; @styletd'>@item.LockedBy</td>
+                <td style='text-align:left ; min-width:150px; @styletd'>@item.FileTypeName</td>
+        @* <td style='text-align:left ; min-width:50px; @styletd'>@item.StepName</td> *@
+
+                <td style='text-align:left ; max-width:180px; @styletd'>
+
+
+            @switch (Convert.ToInt32(ViewBag.step))
+            {
+                case 11:
+
+                    if (Model.ElemBoutton.Any(b => b.Id == 1))
+                    {
+                                        <button class="btn btn-primary fa fa-get-pocket showdocumentinbatch" data-batch=@item.IdEncrypt></button>
+                        @if (Model.ElemBoutton.Any(b => b.Id == 14))
+                        {
+                                                    <button class="btn btn-warning fa fa-list orderdocumentinbatch" data-batch=@item.IdEncrypt> Order</button>
+                        }
+                    }
+                    if (Model.ElemBoutton.Any(b => b.Id == 3))
+                    {
+                                        <button href="#" class="btn btn-primary fa fa-lock batchoneunlock" data-batch=@item.IdEncrypt> Unlock</button>
+                    }
+
+                    break;
+                case 14:
+                    if (Model.ElemBoutton.Any(b => b.Id == 1))
+                    {
+                                        <button class="btn btn-primary fa fa-get-pocket showdocumentinbatch" data-batch=@item.IdEncrypt></button>
+                    }
+                    if (Model.ElemBoutton.Any(b => b.Id == 2))
+                    {
+                       
+                        <button href="#" class="btn btn-danger fa fa-close rejectinbatch" data-batch=@item.IdEncrypt></button>
+                       
+                    }
+                    @if (Model.ElemBoutton.Any(b => b.Id == 14))
+                    {
+                                <button class="btn btn-warning fa fa-list orderdocumentinbatch" data-batch=@item.IdEncrypt> Order</button>
+                    }
+                    break;
+                default:
+
+                    if (Model.ElemBoutton.Any(b => b.Id == 1))
+                    {
+                                        <button class="btn btn-primary fa fa-get-pocket showdocumentinbatch" data-batch=@item.IdEncrypt></button>
+                    }
+                    @if (Model.ElemBoutton.Any(b => b.Id == 14))
+                    {
+                                                <button class="btn btn-warning fa fa-list orderdocumentinbatch" data-batch=@item.IdEncrypt> Order</button>
+                    }
+
+                    @switch (item.StatusId)
+                    {
+                        case 5:
+                            if (Model.ElemBoutton.Any(b => b.Id == 1))
+                            {
+                                                        <button href="#" class="btn btn-success fa fa-check batchonemarkcomplete" data-batch=@item.IdEncrypt>   Mark as Completed</button>
+                            }
+                            break;
+                        case 6:
+                            break;
+                        default:
+                            if (Model.ElemBoutton.Any(b => b.Id == 2))
+                            {
+                                @if ((item.IsLocked == 1 && item.LockedBy == Model.username))
+                                {
+
+                                                              <button href="#" class="btn btn-danger fa fa-close rejectinbatch" data-batch=@item.IdEncrypt></button>
+                                }
+                            }
+                            break;
+                    }
+
+                    break;
+            }
+
+
+            </td>
+        </tr>
+}
+
+
+

@@ -1,0 +1,184 @@
+﻿@using Core.UserModels
+@model Core.UserModels.RoleAccessControlModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@section PageStyles {
+                <style>
+                    .list-item.active {
+                        background-color: #a7c9e3;
+                        font-weight: bold;
+                        border-left: 4px solid #16badb;
+                    }
+                </style>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Role Access Control</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card border">
+                            <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="card-title">
+                                    <i class="ion ion-clipboard mr-1"></i>
+                                    Choose Role
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select class="form-control" id="RoleId" name="RoleId" onchange="initAccessibleMenu()">
+                                        @foreach (var role in Model.Roles)
+                                        {
+                                                        <option value="@(role.Id)">@role.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="card-footer clearfix">
+                                    <button type="button" class="btn btn-info float-right" onclick="updateAccessRole()" id="update-role"><i class="fa fa-save"></i> Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="card-title">
+                                    <i class="ion ion-clipboard mr-1"></i>
+                                    Accessible menu
+                                </h3>
+                            </div>
+                            <div class="card-body" style="max-height: 500px; overflow: auto;">
+                                <ul class="todo-list ui-sortable" data-widget="todo-list">
+                                    @{
+                                        var elementsWithChildren = Model.ParentElements.Where(e => e.ChildElements.Any()).ToList();
+                                        var elementsWithoutChildren = Model.ParentElements.Where(e => !e.ChildElements.Any()).ToList();
+                                    }
+                                    @foreach (var element in elementsWithChildren)
+                                    {
+                                                    <span style="font-weight: 500;"><b>@element.Name</b></span>
+                                        foreach (var childElement in element.ChildElements)
+                                        {
+                                                                    <li id="list-item-@(childElement.Id)" class="list-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                                                        <div class="icheck-primary d-inline ml-2">
+                                                                            <input class="menu-checkbox" type="checkbox" value="@(childElement.Id)" name="menu-@(childElement.Id)" id="menu-@(childElement.Id)">
+                                                                            <label for="menu-@(childElement.Id)"></label>
+                                                                            <span style="font-weight: 500;">@childElement.Name</span>
+                                                                        </div>
+                                                                        <i class="icon-arrow" id="arrow-icon-@(childElement.Id)" onclick="toggleActive('@(childElement.Id)', '@(childElement.MyId)')" style="cursor: pointer;">➔</i>
+                                                                    </li>
+                                        }
+                                                    <br />
+                                    }
+
+                                    @foreach (var element in elementsWithoutChildren)
+                                    {
+                                                    <li id="list-item-@(element.Id)" class="list-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                                        <div class="icheck-primary d-inline ml-2">
+                                                            <input class="menu-checkbox" type="checkbox" value="@(element.Id)" name="menu-@(element.Id)" id="menu-@(element.Id)">
+                                                            <label for="menu-@(element.Id)"></label>
+                                                            <span style="font-weight: 500;">@element.Name</span>
+                                                        </div>
+                                                        <i class="icon-arrow" id="arrow-icon-@(element.Id)" onclick="toggleActive('@(element.Id)', '@(element.MyId)')" style="cursor: pointer;">➔</i>
+                                                    </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="card-title">
+                                    <i class="ion ion-clipboard mr-1"></i>
+                                    Buttons acces
+                                </h3>
+                            </div>
+                            <div class="card-body" style="max-height: 500px; overflow: auto;">
+                                <ul class="todo-list ui-sortable" data-widget="todo-list">
+                                    @foreach (var eb in Model.ElementsBoutton)
+                                    {
+                                                    <li id="" class="list-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                                        <div class="icheck-primary d-inline ml-2">
+                                                            <input class="acces-boutton-checkbox" type="checkbox" value="@(eb.Id)" name="acces-button-@(eb.Id)" id="acces-button-@(eb.Id)">
+                                                            <label for="acces-button-@(eb.Id)"></label>
+                                                            <span style="font-weight: 500;">@eb.Name</span>
+                                                        </div>
+                                                    </li>
+                                    }
+                                </ul>
+                            </div><br />
+                            <div class="card-footter">
+                                <button type="button" class="btn btn-info" onclick="updateAccessBoutton()" id="update-access-boutton"><i class="fa fa-save"></i> Update Access Button</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='col-md-10'>
+      <h4>GET NUMBER OF PAGES</h4>
+
+       <form id="folderForm">
+            <label for="folderPath">Paste folder path :</label>
+            <div class='row'>
+                <div class='col-md-10'>
+                   <input class='form-control mb-2' type="text" id="folderPath" name="folderPath" placeholder="Ex: C:\Users\Nom\Documents\Dossier" />
+                </div>
+                <div class='col-md-2'><button class='btn btn-primary form-control' type="submit">Show</button></div>
+            </div>
+            
+        </form>
+
+        <table id="table_report" class="table table-bordered table-responsive nowrap w-100" style="width:100% !important" >
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>SERIES</th>
+                        <th>FILE NUMBER</th>
+                        <th>TM NAME</th>
+                        <th>NUMBER OF PAGES</th>
+                        <th>QA CHECK ( Provider )</th>
+                        <th>QA CHECK ( IPO )</th>
+                        <th>NOTES</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+    </div>
+    <br /><br />
+
+    
+    <div class='col-md-10'>
+      <h4>UPLOAD EXCEL NDU</h4>
+
+       <form id="excelfilesuploads">
+            <label for="excelFile">Choose excel file :</label>
+            <div class='row'>
+                <div class='col-md-10'>
+                   <input class='form-control mb-2' type="file" id="excelFile" name="excelfiles" />
+                </div>
+                <div class='col-md-2'><button class='btn btn-primary form-control' type="submit">upload</button></div>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+@section PageScripts
+{
+                <script src="~/EDMS/js/roleaccesscontrol.js"></script>
+}

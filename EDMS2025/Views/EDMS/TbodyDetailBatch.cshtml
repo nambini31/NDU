@@ -1,0 +1,92 @@
+﻿@model BatchAndDocumentViewModel
+
+@{
+
+    var i = 1;
+}
+
+
+
+@foreach (var item in Model.doccument)
+{
+    var styletd = "padding-top: 1.1rem;padding-bottom: 0.7rem;";
+
+    var style = "";
+
+    @if (item.DocumentStatusId == 2 || item.DocumentStatusId == 5)
+    {
+        style = "background-color: #ff000033;";
+    }
+   
+    var last = "";
+    var lastby = "";
+
+    @switch (item.LastStep)
+    {
+        case "Modified":
+            last = item.ModifiedOn.HasValue ? item.ModifiedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ModifiedBy;
+            break;
+        case "Reviewed":
+            last = item.ReviewedOn.HasValue ? item.ReviewedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ReviewedBy;
+            break;
+        case "Quality":
+            last = item.QualityOn.HasValue ? item.QualityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.QualityBy;
+
+            break;
+        case "Rescan":
+            last = item.RescanOn.HasValue ? item.RescanOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.RescanBy;
+            break;
+        case "Indexing":
+            last = item.IndexedOn.HasValue ? item.IndexedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.IndexedBy;
+            break;
+        case "Sanity":
+            last = item.SanityOn.HasValue ? item.SanityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.SanityBy;
+            break;
+        default:
+            last = item.CreatedOn.HasValue ? item.CreatedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.CreatedBy;
+            break;
+    }
+
+
+                                        <tr style="@(style)" index=@i data-numdoc=@item.IdEncrypt >
+                                        <td style="@styletd">@item.DocumentNumber</td>
+                                        <td style="@styletd" id="docId@(item.IdEncrypt)">@item.GroupCount (@item.pagesCount)</td>
+                                        <td style="@styletd" >@item.LastStep by @lastby</td>
+                                        <td style="@styletd" >@last</td>
+                                        <td style="@styletd" >@item.DocumentTypeName</td>
+                                        <td style="@styletd" >@(item.CreatedOn.HasValue ? item.CreatedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "")</td>
+                                        <td style="@styletd" >
+
+                                            @if (item.DocumentStatusId == 2 || item.DocumentStatusId == 5 || item.DocumentStatusId == 6)
+                                            {
+                                                                            <a href="#" class="view-full-text" data-toggle="modal" data-target="#textModal"  data-fulltext1="@item.ReasonOther" data-fulltext="@item.RejectionCodeName">@item.DocumentStatusName</a>
+                                            }
+                                            else
+                                            {
+
+                                                @item.DocumentStatusName
+                                            }
+                                            
+                                        </td>
+                                        <td style="@styletd" >
+                                            @if (Model.ElemBoutton.Any(b => b.Id == 5))
+                                            {
+                                                <button href="#" class="fa fa-eye btn btn-primary viewdocument" data-toggle="modal" data-target="#myModal" data-batch =@item.IdEncrypt ></button>
+                                            }
+                                        </td>
+                                    </tr>
+
+    
+    i++;
+
+
+}
+
+

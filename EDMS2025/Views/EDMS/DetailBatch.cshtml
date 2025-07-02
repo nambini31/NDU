@@ -1,0 +1,156 @@
+﻿@model BatchAndDocumentViewModel
+
+@section PageScripts
+{
+            <script type="text/javascript">
+                var batchstep = @ViewBag.step;
+                var batchidclick = '@(ViewBag.batchid)';
+                var imageextension = '@(ViewBag.imageextension)';
+            </script>
+
+            <script src="~/EDMS/js/app.js"></script>
+            <script src="~/plugins/chosen/chosen.jquery.min.js"></script>
+            <script type="text/javascript" src="~/EDMS/js/@(ViewBag.scripts).js"></script>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box"> 
+            <input type="hidden" id="filenumbername" value="@Model?.Batch?.FileNumber" />
+
+
+            <div class="box-body">
+                <table id="table_document_index_crop_sanity_control" class="table table-bordered table-responsive nowrap w-100" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>Document Number</th>
+                            <th>Sheets(Pages)</th>
+                            <th>Last step</th>
+                            <th>Last step on</th>
+                            <th>Type</th>
+                            <th>Created On</th>
+                            <th>Status</th>
+                            <th style='text-align:center ; max-width:30px'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="Showdocumentindex" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="padding-left: 0px !important;overflow: auto;">
+    </div> 
+
+
+     <div id="deletethispage" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="padding-left: 0px !important">
+
+        <div class="modal-dialog modal-md" role="document" style="">
+            <div class="modal-content bigModalIndex">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Content -->
+                     <center> <strong>Are you sure you want to delete this page ?  </strong></center>   
+
+                     <div class="modal-footer">
+
+                                <br />
+                                <button type="button" id="deletepages""  class="btn btn-success"  title="Save" >Yes ( Enter )</button>
+                                <button type="button" class="btn btn-danger"  data-dismiss="modal">Cancel ( Esc )</button>
+                     </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="RejectionModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="padding-left: 0px !important">
+
+        <div class="modal-dialog modal-md" role="document" style="top: 5%;">
+            <div class="modal-content bigModalIndex">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p class="info"><label type="text" />Choose the reason of rejection document</p>
+                </div>
+                <div class="modal-body">
+                    <!-- Content -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Reason</label>
+                            <select class="form-control input-md" required="required" id="rejectiocode">
+                            @foreach (var reject in Model.RejectionCodeAll)
+                            {
+                                                                   <option value="@reject.Id">@reject.Name</option>
+                            }
+                            </select>
+                        </div>
+
+
+
+                    </div>
+                    <br />
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                            <label>Other reason ( Optional )</label>
+                            <textarea row="4" class="form-control " id="otherreason" style="width:100%"></textarea>
+                            </div>
+                            </select>
+                        </div>
+
+
+                    </div>
+                     <div class="modal-footer">
+
+                                <br />
+                                <button type="button" data-SendForPoliceReview="atat" class="btn btn-success"  title="Save" >Yes</button>
+                                <button type="button" id="SendForPoliceReview" class="btn btn-danger" title="cancel" data-dismiss="modal">Cancel</button>
+                     </div>
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+    
+    
+
+
+<div class="modal fade" id="textModal" tabindex="-1" role="dialog" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="textModalLabel">More</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="word-wrap: break-word;" id="fullText"></p>
+                <p style="word-wrap: break-word;" id="fullText1"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>

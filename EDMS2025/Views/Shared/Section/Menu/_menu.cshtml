@@ -1,0 +1,94 @@
+﻿@using Core.UserModels
+@using Core.UserServices.Role
+@using Newtonsoft.Json
+@inject IRoleService RoleService
+@{
+    UserModel user = null;
+}
+@if (Context.Session.GetString("user") != null)
+{
+    user = JsonConvert.DeserializeObject<UserModel>(Context.Session.GetString("user"));
+}
+
+<aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="../../dist/img/user.png" class="img-bordered-sm" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p id="UserFullName"></p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul id="menuSide" class="sidebar-menu" data-widget="tree">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li id="treeLi1" class="treeview active">                        
+                        <ul class="treeview-menu">
+                            @if (user != null)
+                            {
+                                var elements = RoleService.GetElementsByRoleId(user.UserRoleId);
+                                foreach (var element in elements)
+                                {
+                                    if (!element.ChildElements.Any())
+                                    {
+                                        var url = element.Url;
+                                        var segments = url.TrimStart('/').Split('/');
+                                        var (controller, action) = ("", "");
+                                        if (segments.Length >= 2)
+                                        {
+                                            (controller, action) = (segments[0], segments[1]); // [Controller, Action]
+                                        }
+                                        else
+                                        {
+                                            (controller, action) = ("", segments[0]);
+                                        }
+                                        var step = element.Step.ToString();
+                                        <li class=@(ViewBag.step == element.Step ? "active menu-item" : "menu-item")>
+                                            <a asp-action="@action" asp-controller="@controller" asp-route-step="@(Encryption.Encrypt(step))"><i class="fa fa-circle-o"></i> @element.Name</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        var isTreeviewActive = element.ChildElements.Any(childElement => ViewBag.step == childElement.Step);
+
+                                        <li class="treeview @(isTreeviewActive ? "active" : "")">
+                                            <a href="#">
+                                                <i class="fa fa-plus"></i> <span>@element.Name</span>
+                                                <span class="pull-right-container">
+                                                    <i class="fa fa-angle-left pull-right"></i>
+                                                </span>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                @foreach (var childElement in element.ChildElements.ToList())
+                                                {
+                                                    var url = childElement.Url;
+                                                    var segments = url.TrimStart('/').Split('/');
+                                                    var (controller, action) = ("", "");
+                                                    if (segments.Length >= 2)
+                                                    {
+                                                        (controller, action) = (segments[0], segments[1]); // [Controller, Action]
+                                                    }
+                                                    else
+                                                    {
+                                                        (controller, action) = ("", segments[0]);
+                                                    }
+                                                    var step = childElement.Step.ToString();                                                 
+                                                    <li class="nav-item m-3 @(ViewBag.step == childElement.Step ? "active menu-item" : "menu-item")">
+                                                        <a asp-action="@action" asp-controller="@controller" asp-route-step="@(Encryption.Encrypt(step))"><i class="fa fa-minus"></i> @childElement.Name</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }                                                                   
+                                }
+                            }
+                        </ul>
+                    </li>                    
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>

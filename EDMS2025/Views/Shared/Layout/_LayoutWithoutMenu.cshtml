@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    Console.WriteLine(httpContextAccessor.HttpContext?.Request.PathBase);
+}
+
+<!DOCTYPE html>
+<html data-assets-path='@((httpContextAccessor.HttpContext?.Request.PathBase ?? ""))' >
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> @ViewData["Title"] - WEB</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/img/favicon/favicon.ico" />
+
+    <!-- partial Link for the global styles in all project : not customisable-->
+    @await Html.PartialAsync("Section/_Styles")
+
+    <!-- Vendor Styles necesary for the page : not customisable -->
+    @RenderSection("VendorStyles", required: false)
+
+    <!-- Styles customisable for the specific page -->
+    @RenderSection("PageStyles", required: false)
+
+</head>
+
+<body class="hold-transition login-page">
+    
+     @RenderBody()
+
+    @await Html.PartialAsync("Section/_Scripts")
+
+
+    @RenderSection("VendorScripts", required: false)
+
+    @RenderSection("PageScripts", required: false)
+
+
+</body>
+
+</html>

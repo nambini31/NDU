@@ -1,0 +1,223 @@
+﻿@model BatchAndCodeRejectViewModel
+
+@section PageStyles
+{
+
+}
+
+@section PageScripts
+{           
+    <script src="~/EDMS/js/app.js"></script>
+    <script type="text/javascript">
+        var batchstep = @ViewBag.step;
+            var imageextension = '@(ViewBag.imageextension)';
+    </script>
+    <script type="text/javascript" src="~/EDMS/js/@(ViewBag.scripts).js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- general form elements -->
+        <form method="post" id="filterIndexation">
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Search Criteria</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Batch number:</label>
+                                <input type="text" class="form-control" name="batchnumber" id="batchnumber" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Start date:</label>
+                                <input type="date" class="form-control" name="firstdate" id="firstdate" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Last date:</label>
+                                <input type="date" class="form-control" id="lastdate" id="lastdate" />
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label></label>
+                                <button type="submit" class="btn btn-primary btn-block"  style="margin-top: 4px;min-width: max-content;">Search</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+<!-- Main content -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            @* <div class="box-header">
+                <h3 class="box-title">Indexation</h3>
+            </div>
+            <!-- /.box-header --> *@
+
+            <div class="box-body">
+
+
+                <div>
+                    <div class="form-inline">
+
+                        <button type="submit" style="margin-bottom:6px" class="fa fa-check btn btn-success modalexcel" id="modalexcel" disabled style="" title="Export all document"> Excel</button>
+
+                        @switch (ViewBag.step)
+                        {
+                            case 12:
+                                @if (Model.ElemBoutton.Any(b => b.Id == 10))
+                                {
+                                    <button type="submit" style="margin-bottom:6px" class="fa fa-check btn btn-success batchallmarkcomplete" disabled id="modalbatchcompletedall" style="" title="Mark all batch completed"> Mark all batch completed</button>
+                                }
+                                break;
+                            case 14:
+                                @if (Model.ElemBoutton.Any(b => b.Id == 11))
+                                {
+                                    <button type="submit" style="margin-bottom:6px" class="fa fa-check btn btn-info modalexport" id="modalexport" disabled style="" title="Export all document"> Export</button>
+                                }
+                                break;
+                            case 11:
+                                @if (Model.ElemBoutton.Any(b => b.Id == 12))
+                                {
+                                    <button type="submit" style="margin-bottom:6px" class="fa fa-check btn btn-success batchallunlock" disabled id="modalunlockall" style="" title="Unlock all batch"> Unlock all batch</button>
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+
+                        <input type="text" class="form-control" placeholder="Search...." id="searchbatch" style="position: relative;float: right;" />
+
+                    </div>
+
+
+                </div>
+
+
+                <table id="table_index_crop_sanity_control" class="table table-bordered table-responsive nowrap w-100" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>Batch Number</th>
+                            <th>File Number</th>
+                            <th>Sheets(Pages)</th>
+                            <th>Scanned On</th>
+                            <th>Last step</th>
+                            <th>Last step on</th>
+                            <th>Status</th>
+                            <th>Processing By</th>
+                            <th>File Type</th>
+                            @* <th>Step</th> *@
+                            <th style='text-align:center ; max-width:100px'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+    </div>
+</div>
+
+<div class="modal fade" id="textModal" tabindex="-1" role="dialog" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="textModalLabel">More</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="word-wrap: break-word;" id="fullText"></p>
+                <p style="word-wrap: break-word;" id="fullText1"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="RejectionModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="padding-left: 0px !important">
+        <div class="modal-dialog modal-md" role="document" style="top: 5%;">
+            <div class="modal-content bigModalIndex">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p class="info"><label type="text" />Choose the reason of rejection batch</p>
+                </div>
+                <div class="modal-body">
+                    <!-- Content -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Reason</label>
+                            <select class="form-control input-md" required="required" id="rejectiocode">
+                            @foreach (var reject in Model.RejectionCodeAll)
+                            {
+                                                               <option value="@reject.Id">@reject.Name</option>
+                            }
+                            </select>
+                        </div>
+                        
+                       
+
+                    </div>
+                    <br />
+                    <div class="row">
+                       
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                            <label>Other reason ( Optional )</label>
+                            <textarea row="4" class="form-control " id="otherreason"></textarea>
+                            </div>
+                            </select>
+                        </div>
+
+
+                    </div>
+                     <div class="modal-footer">
+
+                                <br />
+                                <button type="button" data-SendForRejectetd="atat" class="btn btn-success"  title="Save" >OUI</button>
+                                <button type="button" id="SendForPoliceReview" class="btn btn-primary" title="Save" data-dismiss="modal">Cancel</button>
+                     </div>
+                </div>
+
+            </div>
+
+        </div>
+</div>
+
+
+
+  @await Html.PartialAsync("DatchOrDocmakecompleted")

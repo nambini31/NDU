@@ -1,0 +1,117 @@
+﻿@model BatchAndDocumentViewModel
+
+@foreach (var item in Model.doccument)
+{
+
+    var styletd = "padding-top: 1.1rem;padding-bottom: 0.7rem;";
+
+    var style = "";
+    var statut = "yes";
+    @if (item.DocumentStatusId == 2 || item.DocumentStatusId == 5)
+    {
+        statut = "no";
+        style = "background-color: #ff000033;";
+    }
+
+    var exp = "";
+    if (item.ExportStatus == 1 && item.DocumentStatusId == 1)
+    {
+        style = "background-color: #4aff4a73;";
+        exp = "export";
+    }
+
+
+    var last = "";
+    var lastby = "";
+
+    @switch (item.LastStep)
+    {
+        case "Modified":
+            last = item.ModifiedOn.HasValue ? item.ModifiedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ModifiedBy;
+            break;
+        case "Reviewed":
+            last = item.ReviewedOn.HasValue ? item.ReviewedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.ReviewedBy;
+            break;
+        case "Quality":
+            last = item.QualityOn.HasValue ? item.QualityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.QualityBy;
+
+            break;
+        case "Indexing":
+            last = item.IndexedOn.HasValue ? item.IndexedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.IndexedBy;
+            break;
+        case "Sanity":
+            last = item.SanityOn.HasValue ? item.SanityOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.SanityBy;
+            break;
+        case "Rescan":
+            last = item.RescanOn.HasValue ? item.RescanOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.RescanBy;
+            break;
+        default:
+            last = item.CreatedOn.HasValue ? item.CreatedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+            lastby = item.CreatedBy;
+            break;
+    }
+                <tr style="@(style)" class="@(statut) @(exp)"  draggable="true">
+        @* <td style='text-align:left ; min-width:150px' >@item.BatchNumber</td> *@
+
+            <td  style='text-align:left ; min-width:150px ; @styletd'>@item.DocumentNumber</td>
+            <td  style='text-align:left ; min-width:150px ; @styletd' id="docId@(item.IdEncrypt)">@item.GroupCount (@item.pagesCount)</td>
+            <td  style='text-align:left ; min-width:150px ; @styletd'>@(item.CreatedOn.HasValue ? item.CreatedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "")</td>
+            <td  style='text-align:left ; min-width:150px ; @styletd'>@item.LastStep by @lastby</td>
+            <td  style='text-align:left ; min-width:150px ; @styletd'>@last</td>
+       @*  @foreach (var docindex in Model.DocumentIndexAll)
+        {
+                    <td style='text-align:left ; min-width:150px ; @styletd' >
+                @{var verif = item.IndexModels.FirstOrDefault(x => x.IndexId == docindex.Id); }
+
+                @if (verif != null)
+                {
+                    
+                    @if (verif?.Value?.Length > 30) // Limite arbitraire
+                    {
+                        <span>@verif.Value.Substring(0, 20)...</span>
+                        <a href="#" class="view-full-text" data-toggle="modal" data-target="#textModal" data-fulltext="@verif.Value">Show more</a>
+                    }
+                    else
+                    {
+                        <span>@verif?.Value</span>
+                    }
+                }
+                            </td>
+        } *@
+                    <td  style='text-align:left ; min-width:150px ; @styletd'>
+                    
+
+            @if (item.DocumentStatusId == 2 || item.DocumentStatusId == 5 || item.DocumentStatusId == 6)
+            {
+                                 <a href="#" class="view-full-text" data-toggle="modal" data-target="#textModal"  data-fulltext1="@item.ReasonOther" data-fulltext="@item.RejectionCodeName">@item.DocumentStatusName</a>
+            }else{
+
+                    @item.DocumentStatusName
+            }
+            
+                
+                </td>
+                        <td  style='text-align:left ; min-width:150px ; @styletd'>@item.FileTypeName</td>
+                        <td style='text-align:center ; max-width:100px ; @styletd'>
+                    @if (Model.ElemBoutton.Any(b => b.Id == 5))
+                    {
+                        <button  class="fa fa-eye btn btn-primary viewdocument" data-toggle="modal" data-target="#myModal" data-batch =@item.IdEncrypt ></button>
+                    }
+                    @if (item.DocumentStatusId == 5 )
+                    {
+                        if (Model.ElemBoutton.Any(b => b.Id == 6))
+                        {
+                            <button class="btn btn-success fa fa-check documentonemarkcomplete" data-doc =@item.IdEncrypt  >   Mark as Completed</button>
+                        }
+                    }
+            
+                </td>
+        </tr>
+}
+

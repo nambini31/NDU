@@ -1,0 +1,84 @@
+﻿@model IndexDocumentWithImageViewModel
+
+<div class="modal-dialog modal-lg " role="document" style="width: 80%;">
+    <div class="modal-content bigModalIndex">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                 <h4><label class="txtStart" type="text"><label/> </h4>
+
+        </div>
+        <div class="modal-body">
+            <!-- Content -->
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="img-container" style="overflow:auto; border: 1px solid black;">
+                        <img src="@(Model.IsPath == "0" 
+                                      ? $"{Model.doccumentImage?.PathRecto}?t={DateTime.Now.Ticks}" 
+                                      : $"{Model.doccumentImage?.ImageContentStr}?t={DateTime.Now.Ticks}")" 
+                             id="cropper-imgrecto" />
+                        <img src="@(Model.IsPath == "0" 
+                                      ? $"{Model.doccumentImage?.PathVerso}?t={DateTime.Now.Ticks}" 
+                                      : $"{Model.doccumentImage?.ImageVersoContentStr}?t={DateTime.Now.Ticks}")" 
+                             id="cropper-imgverso" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @if (Model.doccumentImage.FileTypeId == 2)
+                    {
+                                     <div style="display: flex;justify-content: center;">
+
+                                      <button type="button" id="previousbtn" data-documentprev=@Model.doccumentImage.IdEncrypt class="btn btn-primary class_global_for_all_btn" style="width:100%" title="Verso">Previous</button>
+                                              <button type="button" id="nextbtn" data-documentnext=@Model.doccumentImage.IdEncrypt class="btn btn-primary class_global_for_all_btn" style="width:100%; margin-left:2px" title="Verso">Next</button>
+
+
+                               </div>
+
+                               <br />
+
+                    }
+
+                                <div class="form-group" id="buttonRectoVersoDiv">
+                                            <button type="button" id="rectoverso" class="btn btn-primary btn-block class_global_for_all_btn" title="Verso">View Recto/Verso</button>
+                                </div>
+
+                    
+
+                    @await Html.PartialAsync("IndexValue", Model.doccumentIndex)
+
+                                <div class="form-group">
+                                    <br />
+                                    <button type="button" id="Save" class="btn btn-success btn-block class_global_for_all_btn" data-save=@Model.doccumentImage.IdEncrypt  title="Save" >Save</button>
+
+
+                                     <br />
+
+
+                        @if (Model.ElemBoutton.Any(b => b.Id == 15))
+                        {
+                            <div style="display: flex;justify-content: center;">
+
+                              <button type="button" data-toggle="modal" data-target="#deletethispage" style="width:100%" class="btn btn-block btn-warning class_global_for_all_btn">Delete page</button>
+                            </div>
+                        }
+
+                  <br />
+
+                                    @if (Model.ElemBoutton.Any(b => b.Id == 13))
+                                    {
+                                            <button type="button" data-toggle="modal" d ata-target="#RejectionModal" class="btn btn-danger btn-block class_global_for_all_btn">Reject ( In SAIM Review )</button>
+                                    }
+
+                        @* <button type="button" id="SendForPoliceReview" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-block" data-SendForPoliceReview=@Model.doccumentImage.IdEncrypt title="Save" >Send For Review</button> *@
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+
+            </div>
+        </div>
+
+

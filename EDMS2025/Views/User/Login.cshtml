@@ -1,0 +1,75 @@
+﻿@model Core.ViewModel.Login.LoginModel
+
+@{
+    Layout = "Layout/_LayoutWithoutMenu";
+    ViewData["Title"] = "Login";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+
+@section VendorStyles {
+    
+}
+
+@section VendorScripts {
+    
+}
+
+
+@section PageStyles {
+   
+}
+
+@section PageScripts {
+    
+}
+@* ************** Content ************** *@
+
+<div class="account-pages mt-5 mb-5">
+    
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Exorabilis</b>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">User Login</p>
+            <div class="d-flex justify-content-center">
+                @if (ViewBag.error != null)
+                {
+                    <p style="color: red;" class="login-box-msg" >@ViewBag.error</p>
+                }
+                else if (ViewBag.success != null)
+                {
+                    <p style="color: green;" class="login-box-msg">@ViewBag.success</p>
+                }
+            </div>
+            @using (Html.BeginForm("Login", "User", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(m => m.UserName, new { @type = "text", @class = "form-control", @placeholder = "Enter your username" })
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @placeholder = "Enter your password" })
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                @if (ViewBag.Next != null)
+                {
+                    @Html.TextBoxFor(m => m.Next, new { @type = "hidden", value = @ViewBag.Next })
+                }
+                <div class="row">
+                    <div class="col-xs-8">
+                    </div>  
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+   
+</div>

@@ -1,0 +1,234 @@
+﻿@model Dashboard_DTO
+@{
+    // ViewData["Title"] = "Dashboard Page";
+}
+
+<!-- Main content -->
+ <div class="row">
+      <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h4><strong>@Model.scannfini</strong></h4>
+
+                    <p>Total Scan</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box" style='background-color: #00c0ef !important; color:white'> 
+                <div class="inner">
+                    <h4><strong>@Model.scannedtotalfini</strong></h4>
+
+                    <p>QC to be performed ( Not depending on date )</p>
+                    
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h4><strong>@Model.qualitytotalfini</strong></h4>
+
+                    <p>QC performed</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+         <div class="col-md-3 col-xs-3">
+            <!-- small box -->
+            <div class="small-box " style='background-color: #00a68d !important; color:white'>
+                <div class="inner">
+                    <h4><strong>@Model.completedtotalfini</strong></h4>
+
+                    <p>To be exported ( Not depending on date )</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+
+
+        @* <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h4><strong>@Model.qualitytotalfini</strong></h4>
+
+                    <p>To be indexed</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <div class="small-box " style='background-color: #374850 !important; color:white'>
+                <div class="inner">
+                    <h4><strong>@Model.indexingtotalfini</strong></h4>
+
+                    <p>To be sanity</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+       
+         *@
+        
+
+</div>
+
+<div class="row">
+     @* <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h4><strong>@Model.sanitytotalfini</strong></h4>
+
+                    <p>To be reviewed ( not rejected )</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h4><strong>@Model.rejectedtotalfini</strong></h4>
+
+                    <p>To be reviewed ( rejected ) </p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div> *@
+
+
+
+        <div class="col-md-3 col-xs-3">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h4><strong>@Model.completedtotalexportedfinale</strong></h4>
+
+                    <p>Exported</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-purple">
+                <div class="inner">
+                    <h4><strong>@Model.rescantotalfini</strong></h4>
+
+                    <p>To be rescaned ( not completed )</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h4><strong>@Model.rescancompletedtotalfini</strong></h4>
+
+                    <p>Rescan completed</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+
+       
+
+        
+
+</div>
+
+<div class="row">
+@*           <div class="col-md-3 ">
+            <!-- small box -->
+            <div class="small-box bg-secondary" style='background-color: #04c; color: white;'>
+                <div class="inner">
+                    <h4><strong>@Model.modifiedtotalefinale</strong></h4>
+
+                    <p>Modified</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+
+       
+ *@
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h4 class="box-title">User</strong></h4>
+            </div>
+            <!-- /.box-header -->
+
+            <div class="box-body" style="overflow-x: auto;">
+                <table id="usersdashboard" class="table table-bordered table-responsive nowrap w-100" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Scan completed</th>
+                            <th>QC performed</th>
+                            <th>Indexing completed</th>
+                            <th>Sanity completed</th>
+                            <th>Send to rejected</th>
+                            <th>Send to rescaned</th>
+                            <th>Reviewed completed</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model.UserCounts)
+                    {
+                                <tr>
+                                    <td>@item.Username</td>
+                                    <td>@item.Scan</td>
+                                    <td>@item.Quality</td>
+                                    <td>@item.Index</td>
+                                    <td>@item.Sanity</td>
+                                    <td>@item.Reject</td>
+                                    <td>@item.Rescan</td>    
+                                    <td>@item.Completed</td>    
+                                </tr>
+                    }
+                </table>
+            </div>
+
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+    </div>
+</div>
+
+
