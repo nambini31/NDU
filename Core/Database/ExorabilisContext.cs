@@ -79,8 +79,8 @@ namespace Core.Database
         public virtual DbSet<WorkFlow> WorkFlow { get; set; }
         public virtual DbSet<Trademarks> Trademarks { get; set; }
         public virtual DbSet<Project> Project { get; set; }
-        public virtual DbSet<Project_type> Project_type { get; set; }
-        public virtual DbSet<Project_type_value> Project_type_value { get; set; }
+        public virtual DbSet<Document_type> Document_type { get; set; }
+        public virtual DbSet<ProjectFolio> Project_folio { get; set; }
 
 
 
@@ -1346,14 +1346,14 @@ namespace Core.Database
                 entity.ToTable("Project");
             });
 
-            modelBuilder.Entity<Project_type>(entity =>
+            modelBuilder.Entity<Document_type>(entity =>
             {
-                entity.ToTable("Project_type");
+                entity.ToTable("Document_type");
             });
 
-            modelBuilder.Entity<Project_type_value>(entity =>
+            modelBuilder.Entity<ProjectFolio>(entity =>
             {
-                entity.ToTable("Project_type_value");
+                entity.ToTable("Project_folio");
             });
         }
     }

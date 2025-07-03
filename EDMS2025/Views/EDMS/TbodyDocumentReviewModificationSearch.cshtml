@@ -56,35 +56,17 @@
             lastby = item.CreatedBy;
             break;
     }
-                <tr style="@(style)" class="@(statut) @(exp)"  draggable="true">
-        @* <td style='text-align:left ; min-width:150px' >@item.BatchNumber</td> *@
+             <tr style="@(style)" class="@(statut) @(exp)"  draggable="true">
 
-            <td  style='text-align:left ; min-width:150px ; @styletd'>@item.DocumentNumber</td>
+            <td  style='text-align:left ; min-width:150px ; @styletd'>@item.BatchNumber</td>
             <td  style='text-align:left ; min-width:150px ; @styletd' id="docId@(item.IdEncrypt)">@item.GroupCount (@item.pagesCount)</td>
             <td  style='text-align:left ; min-width:150px ; @styletd'>@(item.CreatedOn.HasValue ? item.CreatedOn.Value.ToString("MM/dd/yyyy HH:mm:ss") : "")</td>
             <td  style='text-align:left ; min-width:150px ; @styletd'>@item.LastStep by @lastby</td>
             <td  style='text-align:left ; min-width:150px ; @styletd'>@last</td>
-       @*  @foreach (var docindex in Model.DocumentIndexAll)
-        {
-                    <td style='text-align:left ; min-width:150px ; @styletd' >
-                @{var verif = item.IndexModels.FirstOrDefault(x => x.IndexId == docindex.Id); }
-
-                @if (verif != null)
-                {
-                    
-                    @if (verif?.Value?.Length > 30) // Limite arbitraire
-                    {
-                        <span>@verif.Value.Substring(0, 20)...</span>
-                        <a href="#" class="view-full-text" data-toggle="modal" data-target="#textModal" data-fulltext="@verif.Value">Show more</a>
-                    }
-                    else
-                    {
-                        <span>@verif?.Value</span>
-                    }
-                }
-                            </td>
-        } *@
-                    <td  style='text-align:left ; min-width:150px ; @styletd'>
+            <td style='text-align:left ; min-width:150px' >@item.ProjectReference</td>
+            <td style='text-align:left ; min-width:150px' >@item.Folio</td>
+       
+            <td  style='text-align:left ; min-width:150px ; @styletd'>
                     
 
             @if (item.DocumentStatusId == 2 || item.DocumentStatusId == 5 || item.DocumentStatusId == 6)
@@ -97,7 +79,7 @@
             
                 
                 </td>
-                        <td  style='text-align:left ; min-width:150px ; @styletd'>@item.FileTypeName</td>
+                        @* <td  style='text-align:left ; min-width:150px ; @styletd'>@item.FileTypeName</td> *@
                         <td style='text-align:center ; max-width:100px ; @styletd'>
                     @if (Model.ElemBoutton.Any(b => b.Id == 5))
                     {

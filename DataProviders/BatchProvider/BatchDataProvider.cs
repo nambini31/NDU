@@ -1214,13 +1214,9 @@ namespace DataProviders.BatchProvider
 
                 foreach (var item in result)
                 {
-                    if (!Directory.Exists(Folder))
-                    {
-                        Directory.CreateDirectory(Folder); // Crée le dossier si nécessaire
-                    }
+                   
 
                     filename = "";
-
 
                     var docstatus = new List<long> { 1 };
                     var docstep = new List<long> { 8 };
@@ -1228,6 +1224,8 @@ namespace DataProviders.BatchProvider
 
                     var filteredDocuments = (from d in exorabilisContext.Document
                                              join f in exorabilisContext.Files on d.FileId equals f.Id
+                                             join docFolio in exorabilisContext.Project_folio on f.Project_folio_id equals docFolio.Id
+                                             join docType in exorabilisContext.Document_type on docFolio.Document_type_id equals docType.Id
                                              join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
                                              where d.BatchId == item.Id
                                                    && docstep.Contains(d.DocumentStepId.Value)
@@ -1235,6 +1233,7 @@ namespace DataProviders.BatchProvider
                                                    && doctype.Contains(d.DocumentTypeId.Value)
                                              select new
                                              {
+                                                 doctype = docType,
                                                  Document = d,
                                                  f.FileTypeId,
                                                  f.Id,
@@ -1259,216 +1258,123 @@ namespace DataProviders.BatchProvider
 
                     var allindex = this.exorabilisContext.Index.ToList();
 
-
-
-                    /*if (ExcelForAllBatch == 0)
-                    {
-
-                        // Créer un fichier Excel
-                        using (var package = new ExcelPackage())
-                        {
-                            var worksheet = package.Workbook.Worksheets.Add("Documents");
-
-                            // Ajouter les en-têtes dynamiques basés sur allindex
-
-                            worksheet.Cells[1, 1].Value = "N°";
-                            int col = 2;
-
-                            if (EnteteAdditionnelle.isInExel == 1 && !string.IsNullOrEmpty(EnteteAdditionnelle.DocNumber))
-                            {
-                                worksheet.Cells[1, 2].Value = EnteteAdditionnelle.DocNumber;
-                                col++;
-                            }
-
-                            foreach (var index in allindex)
-                            {
-                                worksheet.Cells[1, col].Value = index.Name;
-                                col++;
-
-                            }
-
-                            col = this.EnteteAdditionnelle(EnteteAdditionnelle, worksheet, col - 1);
-
-
-                            // Appliquer un style pour les en-têtes
-                            using (var range = worksheet.Cells[1, 1, 1, col])
-                            {
-                                range.Style.Font.Bold = true;
-                                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Green);
-                            }
-
-                            filename = item.ReferenceNumber;
-
-                            // Remplir les données des documents
-                            int row = 2;
-                            int i = 1;
-                            foreach (var documentelement in resultforexcelandexportbyBatch)
-                            {
-                                if (!Directory.Exists(Folder))
-                                {
-                                    Directory.CreateDirectory(Folder); // Crée le dossier si nécessaire
-                                }
-
-
-                                col = 1;
-                                worksheet.Cells[row, col].Value = i.ToString();
-                                col++;
-                                if (EnteteAdditionnelle.isInExel == 1 && !string.IsNullOrEmpty(EnteteAdditionnelle.DocNumber))
-                                {
-                                    worksheet.Cells[row, 2].Value = documentelement.Document.ReferenceNumber;
-                                    col++;
-                                }
-                                foreach (var index in allindex)
-                                {
-
-                                    var docindex = documentelement.IndexModels.Where(x => x.IndexId == index.Id).FirstOrDefault();
-                                    if (docindex != null)
-                                    {
-                                        //if (index.IsFileName == 1)
-                                        //{
-                                        //    if (filename == "")
-                                        //    {
-                                        //        filename += docindex.Value;
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        filename += "-" + docindex.Value;
-                                        //    }
-                                        //}
-
-                                        worksheet.Cells[row, col].Value = docindex.Value;
-                                    }
-                                    else
-                                    {
-                                        worksheet.Cells[row, col].Value = "";
-                                    }
-
-
-                                    col++;
-
-                                }
-                                col = EnteteAdditionnelleValue(EnteteAdditionnelle, worksheet, col, row, documentelement.Document);
-
-
-                                i++;
-                                row++;
-                            }
-                            string excelFilePath = Path.Combine(Folder, $"{filename}.xlsx");
-                            // Ajuster la largeur des colonnes
-                            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
-                            FileInfo excelFile = new FileInfo(excelFilePath);
-                            package.SaveAs(excelFile);
-
-                            Console.WriteLine($"Fichier Excel créé avec succès à : {excelFilePath}");
-                        }
-
-                    }*/
-
                     if (ExportByBatchOrDocument != 0)
                     {
-                        var refbatch = (ExportByBatchOrDocument == 1) ? ReplaceInvalidChars(item.ReferenceNumber , isYear.ToString()) : ReplaceInvalidChars(item.FileNumber, isYear.ToString());
+                        //var refbatch = (ExportByBatchOrDocument == 1) ? ReplaceInvalidChars(item.ReferenceNumber , isYear.ToString()) : ReplaceInvalidChars(item.FileNumber, isYear.ToString());
 
-                        string outputPath = Path.Combine(Folder, $"{refbatch}.pdf");
+                        //string outputPath = Path.Combine(Folder, $"{refbatch}.pdf");
 
-                        var documentLayout = new PdfDocument();
-                        //var tesseractEngine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
+                        //var documentLayout = new PdfDocument();
+                        ////var tesseractEngine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
 
-                        foreach (var item1 in filteredDocuments)
-                        {
-                            var document = item1.Document;
-                            var images = item1.Images;
+                        //foreach (var item1 in filteredDocuments)
+                        //{
+                        //    var document = item1.Document;
+                        //    var images = item1.Images;
 
-                            document.ExportStatus = 1;
-                            document.ExportOn = timestamp_export;
+                        //    document.ExportStatus = 1;
+                        //    document.ExportOn = timestamp_export;
 
-                            // Gestion des images RECTO et VERSO
-                            var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO" && x.Status == 1);
-                            var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO" && x.Status == 1);
+                        //    // Gestion des images RECTO et VERSO
+                        //    var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO" && x.Status == 1);
+                        //    var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO" && x.Status == 1);
 
-                            string pathRecto = imageRecto?.Path ?? string.Empty;
-                            string pathVerso = imageVerso?.Path ?? string.Empty;
+                        //    string pathRecto = imageRecto?.Path ?? string.Empty;
+                        //    string pathVerso = imageVerso?.Path ?? string.Empty;
 
-                            string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
-                            string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
+                        //    string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
+                        //    string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
 
-                            string recto = pathRecto;
-                            string verso = pathVerso;
+                        //    string recto = pathRecto;
+                        //    string verso = pathVerso;
 
-                            if (isBase64 == 1)
-                            {
-                                recto = imageContentStr;
-                                verso = imageVersoContentStr;
+                        //    if (isBase64 == 1)
+                        //    {
+                        //        recto = imageContentStr;
+                        //        verso = imageVersoContentStr;
 
-                                byte[] imageBytesrecto = Convert.FromBase64String(recto);
-                                byte[] imageBytesverso = Convert.FromBase64String(verso);
+                        //        byte[] imageBytesrecto = Convert.FromBase64String(recto);
+                        //        byte[] imageBytesverso = Convert.FromBase64String(verso);
 
-                                //pdf.AddNewPage();
+                        //        //pdf.AddNewPage();
 
-                                if (imageBytesrecto.Length > 0)
-                                {
-                                    AddImage(documentLayout, imageBytesrecto);
+                        //        if (imageBytesrecto.Length > 0)
+                        //        {
+                        //            AddImage(documentLayout, imageBytesrecto);
 
-                                }
+                        //        }
 
-                                // Ajouter une image VERSO si elle existe
-                                if (imageBytesverso.Length > 0)
-                                {
-                                    //pdf.AddNewPage(); // Une nouvelle page pour le verso
-                                    AddImage(documentLayout, imageBytesverso);
-                                }
-                            }
-                            else
-                            {
-                                string webRootPath = request.webhostEnvironment.WebRootPath;
+                        //        // Ajouter une image VERSO si elle existe
+                        //        if (imageBytesverso.Length > 0)
+                        //        {
+                        //            //pdf.AddNewPage(); // Une nouvelle page pour le verso
+                        //            AddImage(documentLayout, imageBytesverso);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        string webRootPath = request.webhostEnvironment.WebRootPath;
 
-                                //pdf.AddNewPage();
+                        //        //pdf.AddNewPage();
 
-                                if (!string.IsNullOrEmpty(recto))
-                                {
-                                    AddImagePath(documentLayout, recto, webRootPath);
-                                }
+                        //        if (!string.IsNullOrEmpty(recto))
+                        //        {
+                        //            AddImagePath(documentLayout, recto, webRootPath);
+                        //        }
 
-                                // Ajouter une image VERSO si elle existe
-                                if (!string.IsNullOrEmpty(verso))
-                                {
-                                    //pdf.AddNewPage(); // Une nouvelle page pour le verso
-                                    AddImagePath(documentLayout, verso, webRootPath);
+                        //        // Ajouter une image VERSO si elle existe
+                        //        if (!string.IsNullOrEmpty(verso))
+                        //        {
+                        //            //pdf.AddNewPage(); // Une nouvelle page pour le verso
+                        //            AddImagePath(documentLayout, verso, webRootPath);
 
-                                }
-                            }
-                            //string output = Path.Combine(Folder, "pdfscanned.pdf");
-                            //setpdfsearchableAsync(output, outputPath);
+                        //        }
+                        //    }
+                        //    //string output = Path.Combine(Folder, "pdfscanned.pdf");
+                        //    //setpdfsearchableAsync(output, outputPath);
 
-                        }
+                        //}
 
-                        item.ExportStatus = 1;
-                        item.ExportOn = timestamp_export;
+                        //item.ExportStatus = 1;
+                        //item.ExportOn = timestamp_export;
 
-                        documentLayout.Save(outputPath);
+                        //documentLayout.Save(outputPath);
 
                     }
                     else
                     {
 
-                        /*foreach (var item1 in resultforexcelandexportbyBatch)
+                        foreach (var item1 in resultforexcelandexportbyBatch)
                         {
 
-                            filename = string.Join("-", item1.IndexModels
-                           .Where(x => allindex.Any(index => index.Id == x.IndexId && index.IsFileName == 1))
-                           .Select(x => x.Value));
-
-                            string outputPath = Path.Combine(Folder, $"{filename}.pdf");
+                            filename = item1.doctype.pdf_name;
 
 
+                            string Documentfolder = Path.Combine(Folder, item.FileNumber, item1.doctype.folder_name);
+
+
+                            if (!Directory.Exists(Documentfolder))
+                            {
+                                Directory.CreateDirectory(Documentfolder); // Crée le dossier si nécessaire
+                            }
+
+
+                            string outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
+
+                            int compteur = 1;
+
+                            while (File.Exists(outputPath))
+                            {
+                                outputPath = Path.Combine(Documentfolder, $"{filename}_{compteur}.pdf");
+                                compteur++;
+                            }
+                           
                             if (item1.FileTypeId == 2)
                             {
                                 var filteredDocumentsbyFile = (from d in exorabilisContext.Document
                                                                join f in exorabilisContext.Files on d.FileId equals f.Id
                                                                join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
-                                                               where d.FileId == item1.Id
+                                                               where d.FileId == item1.Id && ir.Status == 1
                                                                      && docstep.Contains(d.DocumentStepId.Value)
                                                                      && docstatus.Contains(d.DocumentStatusId.Value)
                                                                      && doctype.Contains(d.DocumentTypeId.Value)
@@ -1483,10 +1389,6 @@ namespace DataProviders.BatchProvider
                                                                             .ToList()
                                                                }).ToList().DistinctBy(C => C.Document.Id).OrderBy(i => i.Document.PageOrder);
 
-
-                                //using (var writer = new iText.Kernel.Pdf.PdfWriter(outputPath))
-                                //using (var pdf = new iText.Kernel.Pdf.PdfDocument(writer))
-                                //{
                                 var documentLayout = new PdfDocument();
 
                                 foreach (var item2 in filteredDocumentsbyFile)
@@ -1495,6 +1397,7 @@ namespace DataProviders.BatchProvider
                                     var images = item2.Images;
 
                                     document.ExportStatus = 1;
+                                    document.ExportOn = timestamp_export;
 
                                     // Gestion des images RECTO et VERSO
                                     var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
@@ -1517,18 +1420,14 @@ namespace DataProviders.BatchProvider
                                         byte[] imageBytesrecto = Convert.FromBase64String(recto);
                                         byte[] imageBytesverso = Convert.FromBase64String(verso);
 
-                                        //pdf.AddNewPage();
-
                                         if (imageBytesrecto.Length > 0)
                                         {
                                             AddImage(documentLayout, imageBytesrecto);
 
                                         }
 
-                                        // Ajouter une image VERSO si elle existe
                                         if (imageBytesverso.Length > 0)
                                         {
-                                            //pdf.AddNewPage(); // Une nouvelle page pour le verso
                                             AddImage(documentLayout, imageBytesverso);
                                         }
                                     }
@@ -1536,134 +1435,33 @@ namespace DataProviders.BatchProvider
                                     {
                                         string webRootPath = request.webhostEnvironment.WebRootPath;
 
-                                        //pdf.AddNewPage();
 
                                         if (!string.IsNullOrEmpty(recto))
                                         {
                                             AddImagePath(documentLayout, recto, webRootPath);
                                         }
 
-                                        // Ajouter une image VERSO si elle existe
                                         if (!string.IsNullOrEmpty(verso))
                                         {
-                                            //pdf.AddNewPage(); // Une nouvelle page pour le verso
                                             AddImagePath(documentLayout, verso, webRootPath);
 
                                         }
                                     }
 
-
-
-
-                                    item.ExportStatus = 1;
                                 }
-                                string output = Path.Combine(Folder, "pdfscanned.pdf");
+
                                 documentLayout.Save(outputPath);
-                                setpdfsearchableAsync(output, outputPath);
-
-                                //using (OCRProcessor processor = new OCRProcessor(@"C:\Program Files\Tesseract-OCR\"))
-                                //{
-                                //    FileStream fileStream = new FileStream(outputPath, FileMode.Open, FileAccess.Read);
-                                //    //Load a PDF document.
-                                //    PdfLoadedDocument lDoc = new PdfLoadedDocument(fileStream);
-                                //    //Set OCR language to process.
-                                //    processor.Settings.Language = Languages.English;
-                                //    //Process OCR by providing the PDF document.
-                                //    processor.PerformOCR(lDoc, @"C:\Program Files\Tesseract-OCR\tessdata\");
-                                //    //Create memory stream.
-                                //    MemoryStream stream = new MemoryStream();
-                                //    //Save the document to memory stream.
-                                //    lDoc.Save(stream);
-                                //    lDoc.Close();
-                                //    //Set the position as '0'.
-                                //    stream.Position = 0;
-
-                                //    string outputPath1 = Path.Combine(Folder, $"{filename}_OCR.pdf");
-
-                                //    File.WriteAllBytes(outputPath1, stream.ToArray());
-                                //}
-
+                                
 
                             }
                             else
                             {
 
-
-
-                                var documentLayout = new PdfDocument();
-
-                                var document = item1.Document;
-                                var images = item1.Images;
-
-                                document.ExportStatus = 1;
-
-                                // Gestion des images RECTO et VERSO
-                                var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
-                                var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO");
-
-                                string pathRecto = imageRecto?.Path ?? string.Empty;
-                                string pathVerso = imageVerso?.Path ?? string.Empty;
-
-                                string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
-                                string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
-
-                                string recto = pathRecto;
-                                string verso = pathVerso;
-
-                                if (isBase64 == 1)
-                                {
-                                    recto = imageContentStr;
-                                    verso = imageVersoContentStr;
-
-                                    byte[] imageBytesrecto = Convert.FromBase64String(recto);
-                                    byte[] imageBytesverso = Convert.FromBase64String(verso);
-
-                                    //pdf.AddNewPage();
-
-                                    if (imageBytesrecto.Length > 0)
-                                    {
-                                        AddImage(documentLayout, imageBytesrecto);
-
-                                    }
-
-                                    // Ajouter une image VERSO si elle existe
-                                    if (imageBytesverso.Length > 0)
-                                    {
-                                        //pdf.AddNewPage(); // Une nouvelle page pour le verso
-                                        AddImage(documentLayout, imageBytesverso);
-                                    }
-                                }
-                                else
-                                {
-                                    string webRootPath = request.webhostEnvironment.WebRootPath;
-
-                                    //pdf.AddNewPage();
-
-                                    if (!string.IsNullOrEmpty(recto))
-                                    {
-                                        AddImagePath(documentLayout, recto, webRootPath);
-                                    }
-
-                                    // Ajouter une image VERSO si elle existe
-                                    if (!string.IsNullOrEmpty(verso))
-                                    {
-                                        //pdf.AddNewPage(); // Une nouvelle page pour le verso
-                                        AddImagePath(documentLayout, verso, webRootPath);
-
-                                    }
-                                }
-
-                                string output = Path.Combine(Folder, "pdfscanned.pdf");
-                                documentLayout.Save(outputPath);
-                                setpdfsearchableAsync(output, outputPath);
-
-
-
                             }
 
 
                             item.ExportStatus = 1;
-                        }*/
+                        }
                     }
 
                     j++;

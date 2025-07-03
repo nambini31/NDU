@@ -28,8 +28,8 @@ namespace Services.DocumentService
         public List<TrademarkWithPagesViewModel> GetAllTrademarksWithPages(string pdfFolderPath);
         public Task upload_excel(IFormFile excelFile);
         public Task<BatchAndDocumentViewModel> getAllDocumentsReview(DocumentSearchRequest request);
-        public Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_type_value_id, string nextorprev , string otherreason, string step);
-        public Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_type_value_id, string nextorprev);
+        public Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev , string otherreason, string step);
+        public Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev);
         public Task<SaveIndexResponse> Saveordereddocuments(long batchId, List<ValueOrderRequest> orderData);
 
         public Task<string> SaveImageCropped(IConfiguration _configuration, IWebHostEnvironment webhostEnvironment, string docId , string BatchId, string documentnumber, string Image, bool isRecto, string UserId, string UserName);

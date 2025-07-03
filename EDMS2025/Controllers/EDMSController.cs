@@ -511,18 +511,18 @@ namespace EDMS2025.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveIndexation(string docId, string referenceNumber, long fileTypeId, long type, long Project_type_value_id, string nextorprev, string step, long reason, string otherreason)
+        public async Task<IActionResult> SaveIndexation(string docId, string referenceNumber, long fileTypeId, long type, long Project_folio_id, string nextorprev, string step, long reason, string otherreason)
         {
             if (step == "10")
             {
-                var rsult = await interfaceDocumentAppService.SaveModification(docId, referenceNumber, fileTypeId, userConnected.Id, userConnected.UserName, reason, type, Project_type_value_id, nextorprev);
+                var rsult = await interfaceDocumentAppService.SaveModification(docId, referenceNumber, fileTypeId, userConnected.Id, userConnected.UserName, reason, type, Project_folio_id, nextorprev);
 
                 return Json(new { indexdocrestant = rsult, status = "OK" });
             }
             else
             {
 
-                var rsult = await interfaceDocumentAppService.SaveIndexation(docId, referenceNumber, fileTypeId, userConnected.Id, userConnected.UserName, reason, type, Project_type_value_id, nextorprev, otherreason , step);
+                var rsult = await interfaceDocumentAppService.SaveIndexation(docId, referenceNumber, fileTypeId, userConnected.Id, userConnected.UserName, reason, type, Project_folio_id, nextorprev, otherreason , step);
 
                 if (step != "8" && step != "9" && step != "10")
                 {

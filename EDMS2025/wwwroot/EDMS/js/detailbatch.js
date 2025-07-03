@@ -136,7 +136,7 @@ function savealldocuments(batchstep) {
             documentnumber: $('#documentnumber').val()
         },
         error: function (xhr, status, error) {
-            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
             $("#elementOverlay").LoadingOverlay("hide", true);
         }, success: function (res) {
 
@@ -174,7 +174,7 @@ function RescanAllDocumentsReview(batchstep) {
             otherreason: $("#otherreason").val(),
         },
         error: function (xhr, status, error) {
-            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
             $("#elementOverlay").LoadingOverlay("hide", true);
         }, success: function (res) {
 
@@ -202,7 +202,7 @@ function Load_document_review_modif_search(batchstep) {
             documentnumber: $('#documentnumber').val()
         },
         error: function (xhr, status, error) {
-            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
             $("#elementOverlay").LoadingOverlay("hide", true);
         }, success: function (res) {
 
@@ -319,7 +319,7 @@ function showdocument(docid, reorder) {
                 enCours = false; // Réinitialisation après la requête (réussie ou non)
             },
             error: function (xhr, status, error) {
-                alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+                alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
                 $("#elementOverlay").LoadingOverlay("hide", true);
             }, success: function (res) {
 
@@ -431,6 +431,10 @@ function showdocument(docid, reorder) {
                     saveDocumentIndex(1);
                 });
 
+                let fields = document.querySelector('input.chosen-search-input');
+
+                fields.focus();
+
                 $(document).on('keydown', function (e) {
                     const key = e.key.toLowerCase();
                     var prev = $("[data-documentprev='" + res.data.doccumentImage.idEncrypt + "']");
@@ -439,30 +443,30 @@ function showdocument(docid, reorder) {
                     var rectoverso = $("#rectoverso");
                     var delet = $("#deletepages");
 
-                    let fields = document.querySelector('input.chosen-search-input');
 
 
-                    if (!$('#deletethispage').is(':visible') && key === "arrowright" && next.length > 0 && !next.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input"))  ) {
+
+                    if (!$('#deletethispage').is(':visible') && key === "arrowright" && next.length > 0 && !next.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         viewnextimage();
-                    } else if (!$('#deletethispage').is(':visible') && key === "arrowleft" && prev.length > 0 && !prev.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input")) ) {
+                    } else if (!$('#deletethispage').is(':visible') && key === "arrowleft" && prev.length > 0 && !prev.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         viewpreviousimage();
                     }
-                    else if (!$('#deletethispage').is(':visible') && key === "tab" && rectoverso.length > 0 && !rectoverso.is(':disabled') && rectoverso.is(':visible') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input"))) {
+                    else if (!$('#deletethispage').is(':visible') && key === "tab" && rectoverso.length > 0 && !rectoverso.is(':disabled') && rectoverso.is(':visible') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         rectoversoshortcut();
                     }
-                    else if (!$('#deletethispage').is(':visible') && key === "enter" && save.length > 0 && !save.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input"))  ) {
+                    else if (!$('#deletethispage').is(':visible') && key === "enter" && save.length > 0 && !save.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         saveDocumentIndex(1);
-                    } else if (!$('#deletethispage').is(':visible') && key === "d" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input")) ) {
+                    } else if (!$('#deletethispage').is(':visible') && key === "d" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         $("#deletethispage").modal('show');
 
                     }
-                    else if ($('#deletethispage').is(':visible') && key === "n" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input")) ) {
+                    else if ($('#deletethispage').is(':visible') && key === "n" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         $("#deletethispage").modal('hide');
 
-                    } else if ($('#deletethispage').is(':visible') && key === "enter" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 ||  ! document.activeElement.matches("input.chosen-search-input"))) {
+                    } else if ($('#deletethispage').is(':visible') && key === "enter" && delet.length > 0 && !delet.is(':disabled') && (fields.length === 0 || !document.activeElement.matches("input.chosen-search-input"))) {
                         deletepages();
 
-                    } 
+                    }
                 });
 
                 $("[data-SendForPoliceReview='" + res.data.doccumentImage.idEncrypt + "']").off('click').on('click', function (event) {
@@ -530,20 +534,25 @@ function viewnextimage() {
 function setFocusTonextAfterEnter() {
 
     var btnsaveandreject = $('.btn_save_reject_to_hide');
+    var my_select_box = $('.my_select_box');
 
 
 
 
     let field = document.querySelector('input.chosen-search-input');
-        field.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Empêcher le comportement par défaut de "Entrée"
+    field.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Empêcher le comportement par défaut de "Entrée"
 
-                    if (btnsaveandreject.length > 0 && !btnsaveandreject.is(':disabled')) {
-                        saveDocumentIndex(1);
-                    }
+            if (btnsaveandreject.length > 0 && !btnsaveandreject.is(':disabled')) {
+                saveDocumentIndex(1);
             }
-        });
+        }
+    });
+
+    my_select_box.on('change', function (e) {
+        field.blur();
+    });
 }
 
 function shownumberofsheetsandreferencenumber() {
@@ -561,7 +570,7 @@ function saveDocumentIndex(type) {
     enCours = true;
 
     $("#elementOverlay").LoadingOverlay("show");
-    var Project_type_value_id ;
+    var Project_folio_id;
 
     if ($('.acceptcrop').is(':visible')) {
 
@@ -576,35 +585,38 @@ function saveDocumentIndex(type) {
         if (type == 1) {
 
 
-            var indexes = document.querySelector('input.chosen-search-input');
+            var my_select_box = $('.my_select_box');
+            var input = $('.chosen-container');
+            Project_folio_id = my_select_box.val()[0];
+
 
             var hasError = false;
-            for (var i = 0; i < indexes.length; i++) {
-                var item = indexes[i];
 
-                item.value = item.value.trim();
+            if (Project_folio_id == null) {
 
-                if (item.hasAttribute("required") && item.value.trim() === "") {
+                input.css('border' , "2px solid red");
 
-                    item.style.border = "2px solid red";
+                if (!hasError) {
+                    hasError = true;
 
-                    if (!hasError) {
-                        hasError = true;
-                        item.focus();
-                    }
-
-
-                } else {
-                    item.style.border = "";
+                   
                 }
 
-                
-                Project_type_value_id = item.value;
+
+            } else {
+                input.css('border', "2px solid red");
+
             }
 
+
             if (hasError) {
-                alert("FOLIO required !");
+                let fields = document.querySelector('input.chosen-search-input');
                 $("#elementOverlay").LoadingOverlay("hide", true);
+                setTimeout(function myfunction() {
+
+                    input.trigger("mousedown");
+
+                },200);
                 enCours = false;
 
 
@@ -626,7 +638,7 @@ function saveDocumentIndex(type) {
                 docId: docnextid,
                 referenceNumber: referenceNumber,
                 fileTypeId: fileTypeId,
-                Project_type_value_id: Project_type_value_id,
+                Project_folio_id: Project_folio_id,
                 reason: $("#rejectiocode").val(),
                 otherreason: $("#otherreason").val(),
                 step: batchstep,
@@ -636,7 +648,8 @@ function saveDocumentIndex(type) {
                 enCours = false; // Réinitialisation après la requête (réussie ou non)
             },
             error: function (xhr, status, error) {
-                alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+                
+                alertCustom("danger", 'fa fa-close', "Une erreur s'est produite"); console.log(error);
                 $("#elementOverlay").LoadingOverlay("hide", true);
 
             }, success: function (res) {
@@ -1065,7 +1078,7 @@ function savecroppedevent() {
                     $("#elementOverlay").LoadingOverlay("hide", true);
                 },
                 error: function (xhr, status, error) {
-                    alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+                    alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
                     $("#elementOverlay").LoadingOverlay("hide", true);
                 }
             });
@@ -1096,11 +1109,11 @@ function showOtherNextDocument(nextorprev) {
             enCours = false; // Réinitialisation après la requête (réussie ou non)
         },
         error: function (xhr, status, error) {
-            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");
+            alertCustom("danger", 'fa fa-close', "Une erreur s'est produite");console.log(error);
             $("#elementOverlay").LoadingOverlay("hide", true);
         }, success: function (res) {
 
-           
+
 
             idRecto = res.data.doccumentImage.idRecto;
             idVerso = res.data.doccumentImage.idVerso;
@@ -1146,7 +1159,7 @@ function showOtherNextDocument(nextorprev) {
             }
 
 
-           
+
 
             //if ($("#previousbtn").length > 0 && $("#nextbtn").length > 0) {
 
@@ -1200,7 +1213,7 @@ function updateButtons() {
 
     $("#previousbtn").prop('disabled', currentSheet === 1);
     $("#nextbtn").prop('disabled', currentSheet >= numberofsheets);
-    let nextbtn = $("#nextbtn") ;
+    let nextbtn = $("#nextbtn");
     let firstField = document.querySelector('[name="Folio"]');
 
     if (currentSheet >= numberofsheets || isQualited) {

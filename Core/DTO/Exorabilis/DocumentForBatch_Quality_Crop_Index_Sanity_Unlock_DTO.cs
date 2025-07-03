@@ -30,6 +30,7 @@ namespace Core.DTO.Exorabilis
         public int? ExportStatus { get; set; }
         public DateTimeOffset? LastUpdatedOn { get; set; }
         public string? Pcname { get; set; }
+        public string? Folio { get; set; }
         public string? FileTypeName { get; set; }
         public long? FileTypeId { get; set; }
         public DateTime? IndexedOn { get; set; }
@@ -55,7 +56,7 @@ namespace Core.DTO.Exorabilis
         public string? ModifiedBy { get; set; }
         public DateTime? QualityOn { get; set; }
         public string? QualityBy { get; set; }
-        public string? LicenseNumber { get; set; }
+        public string? ProjectReference { get; set; }
 
         public IEnumerable<DocumentIndex>? IndexModels { get; set; }
     }

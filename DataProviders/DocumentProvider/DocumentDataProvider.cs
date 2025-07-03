@@ -149,8 +149,13 @@ namespace DataProviders.DocumentProvider
 
                          foreach (var doc in documents)
                          {
+                             var folios = (from file in exorabilisContext.Files
+                                           join pfolio in exorabilisContext.Project_folio on file.Project_folio_id equals pfolio.Id
+                                           where file.Id == doc.FileId
+                                           select pfolio).FirstOrDefault();
                              doc.pagesCount = NumberOfPages;
                              doc.GroupCount = count; // Affectation directe
+                             doc.Folio = folios == null ? "" : $"{folios.Folios} ( {folios.NbrOfPages} )";
                          }
 
                          return documents;
@@ -275,15 +280,19 @@ namespace DataProviders.DocumentProvider
 
                      foreach (var doc in documents)
                      {
+                         var folios = (from file in exorabilisContext.Files
+                                       join pfolio in exorabilisContext.Project_folio on file.Project_folio_id equals pfolio.Id
+                                       where file.Id == doc.FileId
+                                       select pfolio).FirstOrDefault();
                          doc.pagesCount = NumberOfPages;
                          doc.GroupCount = count; // Affectation directe
+                         doc.Folio = folios == null ? "" : $"{folios.Folios} ( {folios.NbrOfPages} )";
                      }
 
                      return documents;
                  })
                  .OrderBy(i => i.PageOrder)
                  .ToList();
-
 
                 return groupedResult;
 
@@ -331,9 +340,10 @@ namespace DataProviders.DocumentProvider
                                statusall.Contains(d.DocumentStatusId) && ir.Status == 1 &&
                                   f.BatchId == Convert.ToInt64(batchwithStep.batchId) &&
                                   //d.RejectionCodeId == null &&
-                                  d.DocumentTypeId == Convert.ToInt64(doctype)
+                                  (d.DocumentTypeId == Convert.ToInt64(doctype) || d.DocumentTypeId == 7 )
                             select new DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO
                             {
+                                ProjectReference = b.FileNumber,
                                 ImageId = ir.Id,
                                 BatchId = d.BatchId,
                                 IdEncrypt = d.Id.ToString(),
@@ -410,8 +420,13 @@ namespace DataProviders.DocumentProvider
 
                      foreach (var doc in documents)
                      {
+                         var folios = (from file in exorabilisContext.Files
+                                       join pfolio in exorabilisContext.Project_folio on file.Project_folio_id equals pfolio.Id
+                                       where file.Id == doc.FileId
+                                       select pfolio).FirstOrDefault();
                          doc.pagesCount = NumberOfPages;
                          doc.GroupCount = count; // Affectation directe
+                         doc.Folio = folios == null ? "" : $"{folios.Folios} ( {folios.NbrOfPages} )";
                      }
 
                      return documents;
@@ -456,28 +471,28 @@ namespace DataProviders.DocumentProvider
                 {
                     docstatus = new List<long> { 4, 2 };
                     docstep = new List<long> { 8 };
-                    doctype = new List<long> { Convert.ToInt64(doctypeid) };
+                    doctype = new List<long> { Convert.ToInt64(doctypeid),7 };
                 }
 
                 if (reqstep == 9) // search
                 {
                     docstatus = new List<long> { 1 };
                     docstep = new List<long> { 8 };
-                    doctype = new List<long> { Convert.ToInt64(doctypeid) };
+                    doctype = new List<long> { Convert.ToInt64(doctypeid ),7 };
                 }
 
                 if (reqstep == 10) // modification
                 {
                     docstatus = new List<long> { 4, 1 };
                     docstep = new List<long> { 5, 8 };
-                    doctype = new List<long> { Convert.ToInt64(doctypeid) };
+                    doctype = new List<long> { Convert.ToInt64(doctypeid ) ,7};
                 }
 
                 if (reqstep == 13) // document rescan
                 {
                     docstatus = new List<long> { 5, 6 };
                     docstep = new List<long> { 5, 8, 2, 3 };
-                    doctype = new List<long> { Convert.ToInt64(doctypeid) };
+                    doctype = new List<long> { Convert.ToInt64(doctypeid ),7 };
                 }
 
                 var data = (from d in exorabilisContext.Document
@@ -599,6 +614,7 @@ namespace DataProviders.DocumentProvider
                 var result = (from d in data
                               select new DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO
                               {
+                                  ProjectReference = d.b.FileNumber,
                                   Id = d.d.Id,
                                   IdEncrypt = d.d.Id.ToString(),
                                   FileId = d.f.Id,
@@ -676,8 +692,13 @@ namespace DataProviders.DocumentProvider
 
                      foreach (var doc in documents)
                      {
+                         var folios = (from file in exorabilisContext.Files
+                                        join pfolio in exorabilisContext.Project_folio on file.Project_folio_id equals pfolio.Id
+                                        where file.Id == doc.FileId
+                                        select pfolio).FirstOrDefault();
                          doc.pagesCount = NumberOfPages;
                          doc.GroupCount = count; // Affectation directe
+                         doc.Folio = folios == null ? "" : $"{folios.Folios} ( {folios.NbrOfPages} )";
                      }
 
                      return documents;
@@ -1202,7 +1223,7 @@ namespace DataProviders.DocumentProvider
                             where stepall.Contains(d.DocumentStepId) &&
                          statusall.Contains(d.DocumentStatusId) &&
                             f.BatchId == Convert.ToInt64(batchwithStep.batchId) &&
-                            d.DocumentTypeId == Convert.ToInt64(doctype) && ir.Status == 1
+                            (d.DocumentTypeId == Convert.ToInt64(doctype) || d.DocumentTypeId == 7 ) && ir.Status == 1
                             select new DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO
                             {
                                 IdEncrypt = d.Id.ToString(),
@@ -1277,8 +1298,10 @@ namespace DataProviders.DocumentProvider
 
                 var docid = docId;
                 var list = await (from pj in exorabilisContext.Project
-                                  join pjtv in exorabilisContext.Project_type_value on pj.Id equals pjtv.Project_id
-                                  join pjt in exorabilisContext.Project_type on pjtv.Project_type_id equals pjt.Id
+                                  join pjtv in exorabilisContext.Project_folio on pj.Id equals pjtv.Project_id
+                                  join pjt in exorabilisContext.Document_type on pjtv.Document_type_id equals pjt.Id
+                                  join file in exorabilisContext.Files on pjtv.Id equals file.Project_folio_id into pfolio
+                                  from file in pfolio.DefaultIfEmpty()
                                   where pj.Reference == batch.FileNumber
                                   select new DocumentIndex_DTO
                                   {
@@ -1286,7 +1309,7 @@ namespace DataProviders.DocumentProvider
                                       Project_reference = pj.Reference,
                                       NbrOfPages = pjtv.NbrOfPages,
                                       Folios = pjtv.Folios,
-                                      FileValueId = pjtv.FileId,
+                                      FileValueId = file.Id,
                                       Project_type_value_id = pjtv.Id
                                   }).ToListAsync();
 
@@ -1363,7 +1386,7 @@ namespace DataProviders.DocumentProvider
                              {
                                  DocsCount = (from img in exorabilisContext.Image
                                               join docs in exorabilisContext.Document on img.DocumentId equals docs.Id
-                                              where docs.DocumentTypeId == doctype && docs.FileId == Convert.ToInt64(grouped.FirstOrDefault().fileId) && img.Status == 1
+                                              where (docs.DocumentTypeId == doctype || docs.DocumentTypeId == 7 ) && docs.FileId == Convert.ToInt64(grouped.FirstOrDefault().fileId) && img.Status == 1
                                               select docs
                                              ).Count(),
                                  IdVerso = grouped.FirstOrDefault(x => x.Image.Side == "VERSO" && x.Image.Status == 1) == null ? string.Empty : grouped.FirstOrDefault(x => x.Image.Side == "VERSO").Image.Id.ToString(),
@@ -1500,6 +1523,11 @@ namespace DataProviders.DocumentProvider
             {
                 var docid = docId;
                 var imageextension = interfaceBatchDataProvider.GetValueParam("imageExtension").Value;
+
+                var doctypeid = interfaceBatchDataProvider.GetValueParam("DefaultDocType").Value;
+
+                var doctype = Convert.ToInt64(doctypeid);
+
                 if (fileTypeId == 2)
                 {
                     if (step.ToString().Contains("12"))
@@ -1520,7 +1548,7 @@ namespace DataProviders.DocumentProvider
                     {
                         nextDocOrPrev = (from x in exorabilisContext.Document
                                          join Image in exorabilisContext.Image on x.Id equals Image.DocumentId
-                                         where Image.Status == 1 && x.PageOrder > actual.PageOrder && x.DocumentTypeId == actual.DocumentTypeId && x.FileId == actual.FileId && ((x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
+                                         where Image.Status == 1 && x.PageOrder > actual.PageOrder && ( x.DocumentTypeId == doctype || x.DocumentTypeId == 7 ) && x.FileId == actual.FileId && ((x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
                                          select x)
                                         .OrderBy(x => x.PageOrder) // Assurer que l'on récupère les documents dans l'ordre des IDs
                                         .FirstOrDefault();
@@ -1530,7 +1558,7 @@ namespace DataProviders.DocumentProvider
                     {
                         nextDocOrPrev = (from x in exorabilisContext.Document
                                          join Image in exorabilisContext.Image on x.Id equals Image.DocumentId
-                                         where Image.Status == 1 && x.PageOrder < actual.PageOrder && x.DocumentTypeId == actual.DocumentTypeId && x.FileId == actual.FileId && ((x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
+                                         where Image.Status == 1 && x.PageOrder < actual.PageOrder && (x.DocumentTypeId == doctype || x.DocumentTypeId == 7) && x.FileId == actual.FileId && (( x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
                                          select x)
                             .OrderBy(x => x.PageOrder) // Assurer que l'on récupère les documents dans l'ordre des IDs
                             .LastOrDefault();
@@ -1683,7 +1711,7 @@ namespace DataProviders.DocumentProvider
             return document;
         }
 
-        public async Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_type_value_id, string nextorprev, string otherreason, string step)
+        public async Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev, string otherreason, string step)
         {
             var transaction = exorabilisContext.Database.BeginTransaction();
             try
@@ -1716,7 +1744,7 @@ namespace DataProviders.DocumentProvider
 
                     var project = (from p in exorabilisContext.Project where p.Reference == batch.FileNumber select p).FirstOrDefault();
 
-                    var project_type_value = this.exorabilisContext.Project_type_value.Where(x => x.Id == Project_type_value_id).FirstOrDefault();
+                    var project_folio = this.exorabilisContext.Project_folio.Where(x => x.Id == Project_folio_id).FirstOrDefault();
 
                     var nes = (int)this.GetNextStepId(batch.DocumentStepId.Value);
 
@@ -1786,10 +1814,10 @@ namespace DataProviders.DocumentProvider
                         if (multiDocs != null)
                         {
 
-                            if (Project_type_value_id != null)
+                            if (Project_folio_id != null)
                             {
 
-                                var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_type_value_id == Project_type_value_id);
+                                var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
 
 
                                 if (temp != null)
@@ -1806,8 +1834,8 @@ namespace DataProviders.DocumentProvider
                                 }
                                 else
                                 {
-                                    fileOfDocument.Project_type_value_id = Project_type_value_id;
-                                    project_type_value.FileId = document.FileId;
+                                    fileOfDocument.Project_folio_id = Project_folio_id;
+                                    project_folio.FileId = document.FileId;
                                     responseofall.isReturn = 0;
                                 }
 
@@ -2551,7 +2579,7 @@ namespace DataProviders.DocumentProvider
 
 
 
-        public async Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_type_value_id, string nextorprev)
+        public async Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev)
         {
             using var transaction = exorabilisContext.Database.BeginTransaction();
             try
@@ -2579,6 +2607,10 @@ namespace DataProviders.DocumentProvider
                     where doc.Id == docid
                     select b).FirstOrDefault();
 
+                    var project = (from p in exorabilisContext.Project where p.Reference == batch.FileNumber select p).FirstOrDefault();
+
+                    var project_folio = this.exorabilisContext.Project_folio.Where(x => x.Id == Project_folio_id).FirstOrDefault();
+
                     batchid = batch.Id.ToString();
 
                     var nextStep = 0;
@@ -2592,10 +2624,10 @@ namespace DataProviders.DocumentProvider
                     if (multiDocs != null)
                     {
 
-                        if (Project_type_value_id != null)
+                        if (Project_folio_id != null)
                         {
 
-                            var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_type_value_id == Project_type_value_id);
+                            var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
 
 
                             if (temp != null)
@@ -2612,7 +2644,8 @@ namespace DataProviders.DocumentProvider
                             }
                             else
                             {
-                                fileOfDocument.Project_type_value_id = Project_type_value_id;
+                                fileOfDocument.Project_folio_id = Project_folio_id;
+                                project_folio.FileId = document.FileId;
                                 responseofall.isReturn = 0;
                             }
 
@@ -3079,8 +3112,8 @@ namespace DataProviders.DocumentProvider
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 var projects = new List<Project>();
-                var projects_type = new List<Project_type>();
-                var projects_type_value = new List<Project_type_value>();
+                var projects_type = new List<Document_type>();
+                var projects_folio = new List<ProjectFolio>();
 
                 using (var stream = new MemoryStream())
                 {
@@ -3128,20 +3161,20 @@ namespace DataProviders.DocumentProvider
 
                                     if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(foliosText)) continue;
 
-                                    Project_type verifProjectType = this.exorabilisContext.Project_type.FirstOrDefault(x => x.Name == type.ToString());
+                                    Document_type verifDocumentType = this.exorabilisContext.Document_type.FirstOrDefault(x => x.Name == type.ToString());
 
                                     long projectTypeId = 0;
 
-                                    if (verifProjectType == null)
+                                    if (verifDocumentType == null)
                                     {
-                                        var newProjectType = new Project_type { Name = type.ToString() };
-                                        exorabilisContext.Project_type.Add(newProjectType);
+                                        var newProjectType = new Document_type { Name = type.ToString() };
+                                        exorabilisContext.Document_type.Add(newProjectType);
                                         exorabilisContext.SaveChanges();
                                         projectTypeId = newProjectType.Id;
                                     }
                                     else
                                     {
-                                        projectTypeId = verifProjectType.Id;
+                                        projectTypeId = verifDocumentType.Id;
                                     }
 
                                     var foliosList = foliosText.ToString().Split(new[] { ',' , '&' , '.' }, StringSplitOptions.RemoveEmptyEntries)
@@ -3182,20 +3215,20 @@ namespace DataProviders.DocumentProvider
                                     foreach (var item in folioPagePairs)
                                     {
 
-                                        Project_type_value verifProjectTypeValue = this.exorabilisContext.Project_type_value
-                                        .FirstOrDefault(x => x.Project_id == projectId && x.Project_type_id == projectTypeId
+                                        ProjectFolio verifProjectFolio = this.exorabilisContext.Project_folio
+                                        .FirstOrDefault(x => x.Project_id == projectId && x.Document_type_id == projectTypeId
                                         && x.NbrOfPages == Convert.ToInt64(item.Page) && x.Folios == item.Folio);
 
-                                        if (verifProjectTypeValue == null)
+                                        if (verifProjectFolio == null)
                                         {
-                                            var newProjectTypeValue = new Project_type_value
+                                            var newProjectFolio = new ProjectFolio
                                             {
                                                 Project_id = projectId,
-                                                Project_type_id = projectTypeId,
+                                                Document_type_id = projectTypeId,
                                                 Folios = item.Folio,
                                                 NbrOfPages = long.TryParse(item.Page, out long p) ? p : (int?)0
                                             };
-                                            exorabilisContext.Project_type_value.Add(newProjectTypeValue);
+                                            exorabilisContext.Project_folio.Add(newProjectFolio);
                                             exorabilisContext.SaveChanges();
                                         }
 

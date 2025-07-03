@@ -134,13 +134,13 @@ namespace Services.DocumentService
             return data;
         }
 
-        public Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long project_type_id, string nextorprev , string otherraison , string step)
+        public Task<SaveIndexResponse> SaveIndexation(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev , string otherraison , string step)
         {
-            return this.interfaceDocumentDataProvider.SaveIndexation(docId, referenceNumber , fileTypeId , UserId , UserName , reason , type , project_type_id, nextorprev , otherraison , step);
+            return this.interfaceDocumentDataProvider.SaveIndexation(docId, referenceNumber , fileTypeId , UserId , UserName , reason , type , Project_folio_id, nextorprev , otherraison , step);
         }
-        public Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_type_value_id, string nextorprev)
+        public Task<SaveIndexResponse> SaveModification(string docId, string referenceNumber, long fileTypeId, string UserId, string UserName, long? reason, long type, long Project_folio_id, string nextorprev)
         {
-            return this.interfaceDocumentDataProvider.SaveModification(docId, referenceNumber , fileTypeId , UserId , UserName , reason , type , Project_type_value_id, nextorprev);
+            return this.interfaceDocumentDataProvider.SaveModification(docId, referenceNumber , fileTypeId , UserId , UserName , reason , type , Project_folio_id, nextorprev);
         }
 
         public async Task<Dashboard_DTO> Dashboard(DocumentSearchRequest request)

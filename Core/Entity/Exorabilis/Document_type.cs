@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entity.Exorabilis
 {
-    public class Project_type
+    public class Document_type
     {
         public long Id { get; set; }
         public string? Name { get; set; }
