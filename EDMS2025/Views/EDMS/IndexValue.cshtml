@@ -4,19 +4,21 @@
     <div class="form-group">
         <div class="form-group has-feedback">
             <br />
+
+            
             <Label style="font-size: x-large;height: auto;font-weight: 900;">FOLIO <span style='color:red;'>*</span></Label><br />
 
-            <select required="required" name="Folio" class="form-control my_select_box" multiple style="font-size: xxx-large;height: auto;font-weight: 900;">
+            <select required="required" name="Folio" data-placeholder='Choose folio' class="form-control my_select_box" multiple style="font-size: xxx-large;height: auto;font-weight: 900;">
                 @foreach (var item in Model.docsDTO)
                 {
                     @if (item.FileValueId == Model.FileId)
                     {
 
-                        <option selected data-folio="@item.Folios ( @item.NbrOfPages pages )" value="@item.Project_type_value_id">@item.Folios ( @item.NbrOfPages pages )</option>
+                                <option selected data-folio="@item.Folios ( @item.NbrOfPages pages )" data-document_name="@item.Project_type_name" value="@item.Project_type_value_id">@item.Folios ( @item.NbrOfPages pages )</option>
                     
                     }else{
 
-                        <option data-folio="@item.Folios ( @item.NbrOfPages pages )" value="@item.Project_type_value_id">@item.Folios ( @item.NbrOfPages pages )</option>
+                                <option data-folio="@item.Folios ( @item.NbrOfPages pages )" data-document_name="@item.Project_type_name" value="@item.Project_type_value_id">@item.Folios ( @item.NbrOfPages pages )</option>
 
                     }
                 }

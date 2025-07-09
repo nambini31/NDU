@@ -967,9 +967,7 @@ namespace Core.Database
                     .IsUnicode(false)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.DocumentId)
-                    .HasColumnType("bigint(20)")
-                    .HasDefaultValueSql("NULL");
+                entity.Property(e => e.IsFramework);
 
                 entity.Property(e => e.FileTypeId)
                     .HasColumnType("bigint(20)")

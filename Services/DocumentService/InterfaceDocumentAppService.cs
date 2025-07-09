@@ -23,7 +23,7 @@ namespace Services.DocumentService
         public Task<Dashboard_DTO> Dashboard(DocumentSearchRequest request);
         public Task<bool> SaveAllDocumentsReview(DocumentSearchRequest request);
         public Task<bool> RescanAllDocumentsReview(DocumentSearchRequest request);
-        public Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList(string docId);
+        public IEnumerable<DocumentIndex_DTO> getAllIndexList(string docId);
         public Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList();
         public List<TrademarkWithPagesViewModel> GetAllTrademarksWithPages(string pdfFolderPath);
         public Task upload_excel(IFormFile excelFile);

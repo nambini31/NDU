@@ -337,7 +337,7 @@ function showdocument(docid, reorder) {
                 }
 
                 $("#Showdocumentindex").html(res.vue);
-                $("#filenumbertxt").text(res.data.doccumentImage.fileNumber);
+                $(".txtStart").text(res.data.doccumentImage.fileNumber);
 
                 $(".my_select_box").chosen({ max_selected_options: 1, no_results_text: "Oops, nothing found!", width: "100%" });
 
@@ -504,7 +504,9 @@ function showdocument(docid, reorder) {
 function select_option() {
     const selectedOption = $('select[name="Folio"]').find('option:selected');
     const folioData = selectedOption.data('folio');
+    const docnameData = selectedOption.data('document_name');
     $("#filenumbertxt").text(folioData);
+    $(".txtStart1").text(docnameData);
 }
 
 function rectoversoshortcut() {
@@ -539,16 +541,16 @@ function setFocusTonextAfterEnter() {
 
 
 
-    let field = document.querySelector('input.chosen-search-input');
-    field.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault(); // Empêcher le comportement par défaut de "Entrée"
+    var field = document.querySelector('input.chosen-search-input');
+    //field.addEventListener('keydown', function (e) {
+    //    if (e.key === 'Enter' && !document.activeElement.matches("input.chosen-search-input")) {
+    //        e.preventDefault(); // Empêcher le comportement par défaut de "Entrée"
 
-            if (btnsaveandreject.length > 0 && !btnsaveandreject.is(':disabled')) {
-                saveDocumentIndex(1);
-            }
-        }
-    });
+    //        if (btnsaveandreject.length > 0 && !btnsaveandreject.is(':disabled')) {
+    //            saveDocumentIndex(1);
+    //        }
+    //    }
+    //});
 
     my_select_box.on('change', function (e) {
         field.blur();
@@ -563,7 +565,8 @@ function shownumberofsheetsandreferencenumber() {
         filenumbername = "  --  File Number : " + filenumber;
     }
 
-    $(".txtStart").text(referenceNumber + (isRecto ? " [ RECTO ]" : " [ VERSO ]") + "" + " -- Sheets(pages) : " + numberofsheetspages);
+    //$(".txtStart").text(referenceNumber + (isRecto ? " [ RECTO ]" : " [ VERSO ]") + "" + " -- Sheets(pages) : " + numberofsheetspages);
+    $(".txtStart").text(referenceNumber);
 }
 function saveDocumentIndex(type) {
     if (enCours) return; // Empêche les clics multiples
@@ -604,7 +607,7 @@ function saveDocumentIndex(type) {
 
 
             } else {
-                input.css('border', "2px solid red");
+                input.css('border', "");
 
             }
 

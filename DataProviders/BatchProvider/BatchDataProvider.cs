@@ -159,9 +159,9 @@ namespace DataProviders.BatchProvider
                                   {
                                       BatchNumber = d.b.ReferenceNumber,
                                       NumberOfDocument = (from img in exorabilisContext.Image
-                                                                              join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
-                                                                              where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 && (  docx.DocumentStatusId != 6)
-                                                                              select docx ).Count() / 2,
+                                                          join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
+                                                          where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 && (docx.DocumentStatusId != 6)
+                                                          select docx).Count() / 2,
                                       NumberOfPages = (from img in exorabilisContext.Image
                                                        join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
                                                        where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 && (docx.DocumentStatusId != 6)
@@ -220,7 +220,7 @@ namespace DataProviders.BatchProvider
                                                           select docx).Count() / 2,
                                       NumberOfPages = (from img in exorabilisContext.Image
                                                        join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
-                                                       where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 && (docx.DocumentStatusId ==1)
+                                                       where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 && (docx.DocumentStatusId == 1)
                                                        select docx).Count(),
                                       StatusName = d.status.Name,
                                       StepName = d.step.Name,
@@ -329,11 +329,11 @@ namespace DataProviders.BatchProvider
                                       BatchNumber = d.b.ReferenceNumber,
                                       NumberOfDocument = (from img in exorabilisContext.Image
                                                           join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
-                                                          where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 
+                                                          where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1
                                                           select docx).Count() / 2,
                                       NumberOfPages = (from img in exorabilisContext.Image
                                                        join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
-                                                       where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1 
+                                                       where docx.DocumentTypeId == doctypeid && img.BatchId == d.b.Id && img.Status == 1
                                                        select docx).Count(),
                                       StatusName = d.status.Name,
                                       StepName = d.step.Name,
@@ -1208,13 +1208,11 @@ namespace DataProviders.BatchProvider
                 }*/
 
 
-
-
                 var j = 1;
 
                 foreach (var item in result)
                 {
-                   
+
 
                     filename = "";
 
@@ -1224,8 +1222,10 @@ namespace DataProviders.BatchProvider
 
                     var filteredDocuments = (from d in exorabilisContext.Document
                                              join f in exorabilisContext.Files on d.FileId equals f.Id
-                                             join docFolio in exorabilisContext.Project_folio on f.Project_folio_id equals docFolio.Id
-                                             join docType in exorabilisContext.Document_type on docFolio.Document_type_id equals docType.Id
+                                             join docFolio in exorabilisContext.Project_folio on f.Project_folio_id equals docFolio.Id into folioGroup
+                                             from docFolio in folioGroup.DefaultIfEmpty()
+                                             join docType in exorabilisContext.Document_type on docFolio.Document_type_id equals docType.Id into typeGroup
+                                             from docType in typeGroup.DefaultIfEmpty()
                                              join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
                                              where d.BatchId == item.Id
                                                    && docstep.Contains(d.DocumentStepId.Value)
@@ -1234,14 +1234,16 @@ namespace DataProviders.BatchProvider
                                              select new
                                              {
                                                  doctype = docType,
+                                                 docfolio = docFolio,
                                                  Document = d,
                                                  f.FileTypeId,
                                                  f.Id,
+                                                 f.IsFramework,
                                                  IndexModels = exorabilisContext.DocumentIndex.Where(x => x.DocumentId == d.Id).ToList(),
                                                  Images = exorabilisContext.Image
                                                           .Where(img => img.DocumentId == d.Id)
                                                           .ToList()
-                                             }).ToList().DistinctBy(x => x.Document.Id).OrderBy(x=>x.Document.PageOrder);
+                                             }).ToList().DistinctBy(x => x.Document.Id).OrderBy(x => x.Document.PageOrder);
 
 
                     var resultforexcelandexportbyBatch = filteredDocuments
@@ -1346,117 +1348,146 @@ namespace DataProviders.BatchProvider
 
                         foreach (var item1 in resultforexcelandexportbyBatch)
                         {
-
-                            filename = item1.doctype.pdf_name;
-
-
-                            string Documentfolder = Path.Combine(Folder, item.FileNumber, item1.doctype.folder_name);
-
-
-                            if (!Directory.Exists(Documentfolder))
+                            // si c'est framework
+                            if (item1.IsFramework == 1)
                             {
-                                Directory.CreateDirectory(Documentfolder); // Crée le dossier si nécessaire
-                            }
-
-
-                            string outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
-
-                            int compteur = 1;
-
-                            while (File.Exists(outputPath))
-                            {
-                                outputPath = Path.Combine(Documentfolder, $"{filename}_{compteur}.pdf");
-                                compteur++;
-                            }
-                           
-                            if (item1.FileTypeId == 2)
-                            {
-                                var filteredDocumentsbyFile = (from d in exorabilisContext.Document
-                                                               join f in exorabilisContext.Files on d.FileId equals f.Id
-                                                               join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
-                                                               where d.FileId == item1.Id && ir.Status == 1
-                                                                     && docstep.Contains(d.DocumentStepId.Value)
-                                                                     && docstatus.Contains(d.DocumentStatusId.Value)
-                                                                     && doctype.Contains(d.DocumentTypeId.Value)
-                                                               select new
-                                                               {
-                                                                   Document = d,
-                                                                   f.FileTypeId,
-                                                                   f.Id,
-                                                                   IndexModels = exorabilisContext.DocumentIndex.Where(x => x.DocumentId == d.Id).ToList(),
-                                                                   Images = exorabilisContext.Image
-                                                                            .Where(img => img.DocumentId == d.Id)
-                                                                            .ToList()
-                                                               }).ToList().DistinctBy(C => C.Document.Id).OrderBy(i => i.Document.PageOrder);
-
-                                var documentLayout = new PdfDocument();
-
-                                foreach (var item2 in filteredDocumentsbyFile)
-                                {
-                                    var document = item2.Document;
-                                    var images = item2.Images;
-
-                                    document.ExportStatus = 1;
-                                    document.ExportOn = timestamp_export;
-
-                                    // Gestion des images RECTO et VERSO
-                                    var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
-                                    var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO");
-
-                                    string pathRecto = imageRecto?.Path ?? string.Empty;
-                                    string pathVerso = imageVerso?.Path ?? string.Empty;
-
-                                    string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
-                                    string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
-
-                                    string recto = pathRecto;
-                                    string verso = pathVerso;
-
-                                    if (isBase64 == 1)
-                                    {
-                                        recto = imageContentStr;
-                                        verso = imageVersoContentStr;
-
-                                        byte[] imageBytesrecto = Convert.FromBase64String(recto);
-                                        byte[] imageBytesverso = Convert.FromBase64String(verso);
-
-                                        if (imageBytesrecto.Length > 0)
-                                        {
-                                            AddImage(documentLayout, imageBytesrecto);
-
-                                        }
-
-                                        if (imageBytesverso.Length > 0)
-                                        {
-                                            AddImage(documentLayout, imageBytesverso);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        string webRootPath = request.webhostEnvironment.WebRootPath;
-
-
-                                        if (!string.IsNullOrEmpty(recto))
-                                        {
-                                            AddImagePath(documentLayout, recto, webRootPath);
-                                        }
-
-                                        if (!string.IsNullOrEmpty(verso))
-                                        {
-                                            AddImagePath(documentLayout, verso, webRootPath);
-
-                                        }
-                                    }
-
-                                }
-
-                                documentLayout.Save(outputPath);
-                                
 
                             }
+                            // si c'est pas framework
                             else
                             {
+                                filename = item1.doctype.pdf_name;
 
+
+                                string Documentfolder = Path.Combine(Folder, ReplaceChars(item.FileNumber), ReplaceChars(item1.doctype.folder_name));
+
+                                string outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
+
+
+
+                                if (item1.docfolio.Folios.Contains("PF"))
+                                {
+                                    string firstDocFolder = Documentfolder;
+                                    Documentfolder = Documentfolder + " PF";
+                                    outputPath = Path.Combine(Documentfolder, $"{filename} PF.pdf");
+                                    int compteur = 1;
+
+                                    while (Directory.Exists(Documentfolder))
+                                    {
+                                        Documentfolder = firstDocFolder + $" PF{compteur}";
+                                        outputPath = Path.Combine(Documentfolder, $"{filename} PF{compteur}.pdf");
+                                        compteur++;
+                                    }
+
+                                    Directory.CreateDirectory(Documentfolder);
+
+
+                                }
+                                else
+                                {
+                                    if (!Directory.Exists(Documentfolder))
+                                    {
+                                        Directory.CreateDirectory(Documentfolder); // Crée le dossier si nécessaire
+                                    }
+
+                                    outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
+
+                                    int compteur = 1;
+
+                                    while (File.Exists(outputPath))
+                                    {
+                                        outputPath = Path.Combine(Documentfolder, $"{filename}_{compteur}.pdf");
+                                        compteur++;
+                                    }
+                                }
+
+
+
+                                if (item1.FileTypeId == 2)
+                                {
+                                    var filteredDocumentsbyFile = (from d in exorabilisContext.Document
+                                                                   join f in exorabilisContext.Files on d.FileId equals f.Id
+                                                                   join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
+                                                                   where d.FileId == item1.Id && ir.Status == 1
+                                                                         && docstep.Contains(d.DocumentStepId.Value)
+                                                                         && docstatus.Contains(d.DocumentStatusId.Value)
+                                                                         && doctype.Contains(d.DocumentTypeId.Value)
+                                                                   select new
+                                                                   {
+                                                                       Document = d,
+                                                                       f.FileTypeId,
+                                                                       f.Id,
+                                                                       IndexModels = exorabilisContext.DocumentIndex.Where(x => x.DocumentId == d.Id).ToList(),
+                                                                       Images = exorabilisContext.Image
+                                                                                .Where(img => img.DocumentId == d.Id)
+                                                                                .ToList()
+                                                                   }).ToList().DistinctBy(C => C.Document.Id).OrderBy(i => i.Document.PageOrder);
+
+                                    var documentLayout = new PdfDocument();
+
+                                    foreach (var item2 in filteredDocumentsbyFile)
+                                    {
+                                        var document = item2.Document;
+                                        var images = item2.Images;
+
+                                        document.ExportStatus = 1;
+                                        document.ExportOn = timestamp_export;
+
+                                        // Gestion des images RECTO et VERSO
+                                        var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
+                                        var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO");
+
+                                        string pathRecto = imageRecto?.Path ?? string.Empty;
+                                        string pathVerso = imageVerso?.Path ?? string.Empty;
+
+                                        string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
+                                        string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
+
+                                        string recto = pathRecto;
+                                        string verso = pathVerso;
+
+                                        if (isBase64 == 1)
+                                        {
+                                            recto = imageContentStr;
+                                            verso = imageVersoContentStr;
+
+                                            byte[] imageBytesrecto = Convert.FromBase64String(recto);
+                                            byte[] imageBytesverso = Convert.FromBase64String(verso);
+
+                                            if (imageBytesrecto.Length > 0)
+                                            {
+                                                AddImage(documentLayout, imageBytesrecto);
+
+                                            }
+
+                                            if (imageBytesverso.Length > 0)
+                                            {
+                                                AddImage(documentLayout, imageBytesverso);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string webRootPath = request.webhostEnvironment.WebRootPath;
+
+
+                                            if (!string.IsNullOrEmpty(recto))
+                                            {
+                                                AddImagePath(documentLayout, recto, webRootPath);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(verso))
+                                            {
+                                                AddImagePath(documentLayout, verso, webRootPath);
+
+                                            }
+                                        }
+
+                                    }
+
+                                    documentLayout.Save(outputPath);
+
+
+                                }
                             }
 
 
@@ -1479,9 +1510,23 @@ namespace DataProviders.BatchProvider
 
         }
 
-        private string ReplaceInvalidChars(string fileName , string isYear)
+        private string ReplaceChars(string fileName)
         {
-            
+
+            char[] InvalidChars = new char[] { '/', '\\', '*', '"', '<', '>', '|', ':', '?', '\0' };
+
+            // On divise la chaîne en morceaux valides
+            string[] parts = fileName.Split(InvalidChars, StringSplitOptions.RemoveEmptyEntries);
+
+            // On les rejoint avec un tiret
+            string cleanFileName = string.Join("-", parts);
+
+            return cleanFileName;
+        }
+
+        private string ReplaceInvalidChars(string fileName, string isYear)
+        {
+
             char[] InvalidChars = new char[] { '/', '\\', '*', '"', '<', '>', '|', ':', '?', '\0' };
 
             foreach (char invalidChar in InvalidChars)
@@ -1511,7 +1556,7 @@ namespace DataProviders.BatchProvider
                     }
 
                     fileName = $"MU-M-{newYear}-{rest}";
-                   
+
                 }
             }
             else
@@ -2332,7 +2377,7 @@ namespace DataProviders.BatchProvider
 
                 await this.exorabilisContext.SaveChangesAsync();
 
-                transaction.Commit();
+                //transaction.Commit();
 
                 return response;
             }

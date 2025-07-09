@@ -17,7 +17,7 @@ namespace DataProviders.DocumentProvider
     {
         public Task<IEnumerable<DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO>> getAllDocumentsByBatchWithStep(BatchwithStepRequest batchwithStep);
         public Task<IEnumerable<DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO>> getAllDocumentsByBatchToOrder(BatchwithStepRequest batchwithStep);
-        public Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList(string docId);
+        public IEnumerable<DocumentIndex_DTO> getAllIndexList(string docId);
         public Task<int> DeletePages(bool isRecto, long idVerso, long idRecto);
         public Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList();
         public Task<Dashboard_DTO> Dashboard(DocumentSearchRequest request);

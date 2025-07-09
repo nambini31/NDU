@@ -16,6 +16,7 @@ namespace Core.DTO.Exorabilis
         public long? DocumentStep { get; set; }
         public long? DocumentStatus { get; set; }
         public int? DocsCount { get; set; }
+        public int? IsFramework { get; set; }
         public string? IdEncrypt { get; set; }
         public string? PathRecto { get; set; }
         public string? FileNumber { get; set; }

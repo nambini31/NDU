@@ -1,12 +1,14 @@
 ﻿@model IndexDocumentWithImageViewModel
 
-<div class="modal-dialog modal-lg " role="document" style="width: 90%;">
+<div class="modal-dialog modal-lg " role="document" style="width: 51%;">
     <div class="modal-content bigModalIndex">
-        <div class="modal-header">
+        <div class="modal-header" style="padding: 2px 15px !important;">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4><label class="txtStart" type="text"><label/> </h4>
+            <h4>
+                <label class="txtStart1" type="text"></label>  
+            </h4>
         </div>
         <div class="modal-body">
             @if (Model.ElemBoutton.Any(b => b.Id == 18))
@@ -165,9 +167,8 @@
                     }
                     <br />
 
-            <div style='font-weight: 900;font-size: 70px;' id="filenumbertxt">
-                        
-      </div>       
+            <div class="hidden" id="filenumbertxt"></div>       
+            <div class="txtStart" style="font-weight: 600;font-size: 17px;"></div>       
                      
 
         </div>

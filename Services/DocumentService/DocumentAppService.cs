@@ -83,7 +83,7 @@ namespace Services.DocumentService
                 doccumentImage = await this.interfaceDocumentDataProvider.getAllImageByDocId(docId),
                 doccumentIndex = new DocumentIndexFile_DTO
                 {
-                    docsDTO = await this.interfaceDocumentDataProvider.getAllIndexList(docId),
+                    docsDTO = this.interfaceDocumentDataProvider.getAllIndexList(docId),
                 },
 
 
@@ -95,9 +95,9 @@ namespace Services.DocumentService
             return data;
         }
 
-        public async Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList(string docId)
+        public IEnumerable<DocumentIndex_DTO> getAllIndexList(string docId)
         {
-            return  await this.interfaceDocumentDataProvider.getAllIndexList(docId);
+            return  this.interfaceDocumentDataProvider.getAllIndexList(docId);
         }
         public async Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList()
         {

@@ -82,7 +82,7 @@ namespace DataProviders.DocumentProvider
                                  where ((d.DocumentStepId == 5 && d.DocumentStatusId == 4) || (d.DocumentStepId == 8 && d.DocumentStatusId == 2) || (d.DocumentStepId == 8 && d.DocumentStatusId == 5)) &&
                                        f.BatchId == Convert.ToInt64(batchwithStep.batchId) &&
                                        ir.Status == 1 &&
-                                       d.DocumentTypeId == Convert.ToInt64(doctype)
+                                       ( d.DocumentTypeId == Convert.ToInt64(doctype) || d.DocumentTypeId == 7 )
                                  select new DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO
                                  {
                                      ImageId = ir.Id,
@@ -199,7 +199,7 @@ namespace DataProviders.DocumentProvider
                                statusall.Contains(d.DocumentStatusId) &&
                                   f.BatchId == Convert.ToInt64(batchwithStep.batchId) &&
                                   //d.RejectionCodeId == null &&
-                                  d.DocumentTypeId == Convert.ToInt64(doctype)
+                                  (d.DocumentTypeId == Convert.ToInt64(doctype) || d.DocumentTypeId == 7)
                             select new DocumentForBatch_Quality_Crop_Index_Sanity_Unlock_DTO
                             {
                                 ImageId = ir.Id,
@@ -670,6 +670,14 @@ namespace DataProviders.DocumentProvider
                      var isSingle = group.First().FileTypeId == 1;
                      var NumberOfPages = 0;
                      if (reqstep == 12) // rescan
+                     {
+                         NumberOfPages = (from img in exorabilisContext.Image
+                                          join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
+                                          where img.DocumentTypeId == Convert.ToInt64(doctypeid) && docx.FileId == grouped.FileId && img.Status == 1
+                                          select img
+                                         ).Count();
+                     }
+                     else if(reqstep == 13) // rescan
                      {
                          NumberOfPages = (from img in exorabilisContext.Image
                                           join docx in exorabilisContext.Document on img.DocumentId equals docx.Id
@@ -1282,7 +1290,7 @@ namespace DataProviders.DocumentProvider
 
         }
 
-        public async Task<IEnumerable<DocumentIndex_DTO>> getAllIndexList(string docId)
+        public IEnumerable<DocumentIndex_DTO> getAllIndexList(string docId)
         {
             try
             {
@@ -1297,7 +1305,7 @@ namespace DataProviders.DocumentProvider
 
 
                 var docid = docId;
-                var list = await (from pj in exorabilisContext.Project
+                var list = (from pj in exorabilisContext.Project
                                   join pjtv in exorabilisContext.Project_folio on pj.Id equals pjtv.Project_id
                                   join pjt in exorabilisContext.Document_type on pjtv.Document_type_id equals pjt.Id
                                   join file in exorabilisContext.Files on pjtv.Id equals file.Project_folio_id into pfolio
@@ -1311,7 +1319,7 @@ namespace DataProviders.DocumentProvider
                                       Folios = pjtv.Folios,
                                       FileValueId = file.Id,
                                       Project_type_value_id = pjtv.Id
-                                  }).ToListAsync();
+                                  }).ToList().DistinctBy(g => g.Project_type_value_id);
 
                 return list;
 
@@ -1377,7 +1385,8 @@ namespace DataProviders.DocumentProvider
                                  rejectid = docs.RejectionCodeId,
                                  filetype = filetype,
                                  fileId = docs.FileId,
-                                 filenumber = batch.FileNumber
+                                 filenumber = batch.FileNumber,
+                                 IsFramework = files.IsFramework
 
 
                              } into temp
@@ -1392,6 +1401,7 @@ namespace DataProviders.DocumentProvider
                                  IdVerso = grouped.FirstOrDefault(x => x.Image.Side == "VERSO" && x.Image.Status == 1) == null ? string.Empty : grouped.FirstOrDefault(x => x.Image.Side == "VERSO").Image.Id.ToString(),
                                  IdRecto = grouped.FirstOrDefault(x => x.Image.Side == "RECTO" && x.Image.Status == 1) == null ? string.Empty : grouped.FirstOrDefault(x => x.Image.Side == "RECTO").Image.Id.ToString(),
                                  IdEncrypt = docId,
+                                 IsFramework = grouped.FirstOrDefault().IsFramework,
                                  FileId = grouped.FirstOrDefault().fileId,
                                  FileNumber = grouped.FirstOrDefault().filenumber,
                                  isQualited = (string.IsNullOrEmpty(grouped.FirstOrDefault().qualitedBy) ? false : true),
@@ -1530,7 +1540,7 @@ namespace DataProviders.DocumentProvider
 
                 if (fileTypeId == 2)
                 {
-                    if (step.ToString().Contains("12"))
+                    if (step.ToString().Contains("12") || step.ToString().Contains("13"))
                     {
                         List<long> listofstep = new List<long> { 2, 3, 5, 8 };
 
@@ -1548,7 +1558,7 @@ namespace DataProviders.DocumentProvider
                     {
                         nextDocOrPrev = (from x in exorabilisContext.Document
                                          join Image in exorabilisContext.Image on x.Id equals Image.DocumentId
-                                         where Image.Status == 1 && x.PageOrder > actual.PageOrder && ( x.DocumentTypeId == doctype || x.DocumentTypeId == 7 ) && x.FileId == actual.FileId && ((x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
+                                         where Image.Status == 1 && x.PageOrder > actual.PageOrder && ( x.DocumentTypeId == doctype || x.DocumentTypeId == 7 ) && x.FileId == actual.FileId && ((x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && (step == 12 || step == 13)))
                                          select x)
                                         .OrderBy(x => x.PageOrder) // Assurer que l'on récupère les documents dans l'ordre des IDs
                                         .FirstOrDefault();
@@ -1558,7 +1568,7 @@ namespace DataProviders.DocumentProvider
                     {
                         nextDocOrPrev = (from x in exorabilisContext.Document
                                          join Image in exorabilisContext.Image on x.Id equals Image.DocumentId
-                                         where Image.Status == 1 && x.PageOrder < actual.PageOrder && (x.DocumentTypeId == doctype || x.DocumentTypeId == 7) && x.FileId == actual.FileId && (( x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && step == 12))
+                                         where Image.Status == 1 && x.PageOrder < actual.PageOrder && (x.DocumentTypeId == doctype || x.DocumentTypeId == 7) && x.FileId == actual.FileId && (( x.DocumentStatusId != 5 && x.DocumentStatusId != 6 && step != 12) || (x.DocumentStatusId == 5 || x.DocumentStatusId == 6 && ( step == 12 || step == 13)))
                                          select x)
                             .OrderBy(x => x.PageOrder) // Assurer que l'on récupère les documents dans l'ordre des IDs
                             .LastOrDefault();
@@ -1749,7 +1759,7 @@ namespace DataProviders.DocumentProvider
                     var nes = (int)this.GetNextStepId(batch.DocumentStepId.Value);
 
 
-                    if (type == 3)
+                    if (type == 2)
                     {
                         if (fileTypeId == 2)
                         {
@@ -1770,8 +1780,8 @@ namespace DataProviders.DocumentProvider
                                     document.LastStep = "Rescan";
 
                                     //batch.NumberOfDocument -= 1;
-                                    batch.RescanBy = UserName;
-                                    batch.RescanOn = DateTime.Now;
+                                    //batch.RescanBy = UserName;
+                                    //batch.RescanOn = DateTime.Now;
                                 }
                             }
                         }
@@ -1817,10 +1827,16 @@ namespace DataProviders.DocumentProvider
                             if (Project_folio_id != null)
                             {
 
-                                var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
+                                var temp = (from file in exorabilisContext.Files
+                                            join doc in exorabilisContext.Document on file.Id equals doc.FileId
+                                            where doc.RejectionCodeId == null && file.BatchId == batch.Id && file.Id != document.FileId && file.Project_folio_id == Project_folio_id select file
+                                             ).FirstOrDefault();
+                                    
+                                    //exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
 
+                                var verifunique = exorabilisContext.Index.FirstOrDefault(x => x.Id == 0 && x.IsUnique == 1);
 
-                                if (temp != null)
+                                if ( temp != null && verifunique != null )
                                 {
 
                                     responseofall.isReturn = 1;
@@ -1835,7 +1851,8 @@ namespace DataProviders.DocumentProvider
                                 else
                                 {
                                     fileOfDocument.Project_folio_id = Project_folio_id;
-                                    project_folio.FileId = document.FileId;
+                                    fileOfDocument.BatchId = document.BatchId;
+                                    
                                     responseofall.isReturn = 0;
                                 }
 
@@ -2609,7 +2626,6 @@ namespace DataProviders.DocumentProvider
 
                     var project = (from p in exorabilisContext.Project where p.Reference == batch.FileNumber select p).FirstOrDefault();
 
-                    var project_folio = this.exorabilisContext.Project_folio.Where(x => x.Id == Project_folio_id).FirstOrDefault();
 
                     batchid = batch.Id.ToString();
 
@@ -2627,10 +2643,17 @@ namespace DataProviders.DocumentProvider
                         if (Project_folio_id != null)
                         {
 
-                            var temp = exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
+                            var temp = (from file in exorabilisContext.Files
+                                                   join doc in exorabilisContext.Document on file.Id equals doc.FileId
+                                                   where doc.RejectionCodeId == null && file.BatchId == batch.Id && file.Id != document.FileId && file.Project_folio_id == Project_folio_id select file
+                                             ).FirstOrDefault();
 
 
-                            if (temp != null)
+                            //exorabilisContext.Files.FirstOrDefault(x => x.BatchId == batch.Id && x.Id != document.FileId && x.Project_folio_id == Project_folio_id);
+
+                            var verifunique = exorabilisContext.Index.FirstOrDefault(x => x.Id == 0 && x.IsUnique == 1);
+
+                            if (temp != null && verifunique != null)
                             {
 
                                 responseofall.isReturn = 1;
@@ -2645,7 +2668,7 @@ namespace DataProviders.DocumentProvider
                             else
                             {
                                 fileOfDocument.Project_folio_id = Project_folio_id;
-                                project_folio.FileId = document.FileId;
+                                fileOfDocument.BatchId = document.BatchId;
                                 responseofall.isReturn = 0;
                             }
 
@@ -3123,7 +3146,7 @@ namespace DataProviders.DocumentProvider
                         foreach (var ws in package.Workbook.Worksheets)
                         {
                             int rowHeader = 3;
-                            int startDataRow = 5;
+                            int startDataRow = 6;
                             int lastRow = ws.Dimension.End.Row;
                             int maxCol = ws.Dimension.End.Column;
 
@@ -3208,7 +3231,7 @@ namespace DataProviders.DocumentProvider
                                     }
                                     else
                                     {
-                                        throw new InvalidOperationException("Le nombre de pages ne correspond pas au nombre de folios, et il y a plus d'une page.");
+                                        throw new InvalidOperationException($"Le nombre de pages ne correspond pas au nombre de folios, et il y a plus d'une page. { type }");
                                     }
 
 
