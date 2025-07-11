@@ -1,0 +1,21 @@
+﻿@model IEnumerable<TrademarkWithPagesViewModel>
+
+@{
+    int i = 1;
+}
+
+
+@foreach (var trademark in Model)
+{
+    <tr>
+        <td>@i</td>
+        <td>@trademark.file_ser</td>
+        <td>@trademark.file_nbr</td>
+        <td>@trademark.mark_name</td>
+        <td>@trademark.NumberOfPages</td>
+        <td>OK</td>
+        <td></td>
+        <td></td>
+    </tr>
+    i++;
+}

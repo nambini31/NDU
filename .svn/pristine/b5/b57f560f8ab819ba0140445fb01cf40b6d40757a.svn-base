@@ -1,0 +1,17 @@
+﻿
+@* <link rel="stylesheet" href="~/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"> *@
+<link rel="stylesheet" href="~/plugins/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="~/plugins/font-awesome/css/font-awesome.min.css">
+@* <link rel="stylesheet" href="~/plugins/Ionicons/css/ionicons.min.css"> *@
+@* <link rel="stylesheet" href="~/plugins/jvectormap/jquery-jvectormap.css"> *@
+<link rel="stylesheet" href="~/EDMS/css/AdminLTE.min.css">
+<link rel="stylesheet" href="~/EDMS/css/cropper.css">
+<link rel="stylesheet" href="~/EDMS/css/main.css">
+<link rel="stylesheet" href="~/EDMS/css/skins/_all-skins.min.css">
+<link rel="stylesheet" href="~/EDMS/css/MySite.css">
+<link href="~/plugins/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
+<link href="~/plugins/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
+<link href="~/plugins/datatables/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
+<link href="~/plugins/datatables/select.bootstrap4.css" rel="stylesheet" type="text/css" />
+<link href="~/plugins/daterangepicker/daterangepicker.min.css" rel="stylesheet" />  
+<link href="~/plugins/chosen/chosen.min.css" rel="stylesheet" />  

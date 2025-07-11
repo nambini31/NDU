@@ -1,0 +1,61 @@
+﻿
+@{
+    // ViewData["Title"] = "Dashboard Page";
+}
+@section PageScripts
+{           
+            <script src="~/EDMS/js/Dashboard.js"></script>
+}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <form method="post" id="filterIndexation">
+                <div class="row">
+
+                        <div class="col-md-2">
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Start date:</label>
+                                <input type="date" class="form-control" name="firstdate" id="firstdate" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Last date:</label>
+                                <input type="date" class="form-control" id="lastdate" id="lastdate" />
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label></label>
+                                <button type="submit" class="btn btn-primary btn-block"  style="margin-top: 4px;min-width: max-content;">Search</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body idfordashboard">
+                
+            </div>
+
+        </div>
+
+    </div>
+</div>
+

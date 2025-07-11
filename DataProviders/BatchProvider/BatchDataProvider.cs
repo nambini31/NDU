@@ -986,7 +986,8 @@ namespace DataProviders.BatchProvider
             var isYear = GetValueParam("YearCompletOnChangeName").Value;
             var imageextension = GetValueParam("imageExtension").Value;
             var EnteteAdditionnelle = GetValueParam("EnteteExcelAdditionnelle");
-            var FolderToExport = GetValueParam("FolderToExport").Value;
+            var FolderToExportProject = GetValueParam("FolderToExportProject").Value;
+            var FolderToExportFramework = GetValueParam("FolderToExportFramework").Value;
             var ExportByBatchOrDocument = Convert.ToInt32(GetValueParam("PdfByBatch").Value);
             var ExcelForAllBatch = Convert.ToInt32(GetValueParam("OneExcelForAllBatch").Value);
             var isBase64 = getChrono().Result.DatabaseSaveImage;
@@ -1028,9 +1029,10 @@ namespace DataProviders.BatchProvider
 
                 var timestamp_export = DateTime.Now;
                 string timestamp = DateTime.Now.ToString("yyyy-MM-dd");
-                string times = DateTime.Now.ToString("HH-mm-ff");
+                //string times = DateTime.Now.ToString("HH-mm-ff");
 
-                string Folder = Path.Combine(FolderToExport, timestamp, times);
+                string FolderForProject = Path.Combine(FolderToExportProject, timestamp);
+                string FolderForFramework = FolderToExportFramework;
 
 
 
@@ -1351,6 +1353,53 @@ namespace DataProviders.BatchProvider
                             // si c'est framework
                             if (item1.IsFramework == 1)
                             {
+                                filename = item.FileNumber;
+
+
+                                string Documentfolder = Path.Combine(FolderForFramework);
+
+                                string outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
+
+                                if (!Directory.Exists(Documentfolder))
+                                {
+                                    Directory.CreateDirectory(Documentfolder); // Crée le dossier si nécessaire
+                                }
+
+
+                                if (item1.FileTypeId == 2)
+                                {
+                                    var filteredDocumentsbyFile = (from d in exorabilisContext.Document
+                                                                   join f in exorabilisContext.Files on d.FileId equals f.Id
+                                                                   join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
+                                                                   where d.FileId == item1.Id && ir.Status == 1
+                                                                         && docstep.Contains(d.DocumentStepId.Value)
+                                                                         && docstatus.Contains(d.DocumentStatusId.Value)
+                                                                         && doctype.Contains(d.DocumentTypeId.Value)
+                                                                   select new
+                                                                   {
+                                                                       Document = d,
+                                                                       f.FileTypeId,
+                                                                       f.Id,
+                                                                       IndexModels = exorabilisContext.DocumentIndex.Where(x => x.DocumentId == d.Id).ToList(),
+                                                                       Images = exorabilisContext.Image
+                                                                                .Where(img => img.DocumentId == d.Id)
+                                                                                .ToList()
+                                                                   }).ToList().DistinctBy(C => C.Document.Id).OrderBy(i => i.Document.PageOrder);
+
+                                    var documentLayout = new PdfDocument();
+
+                                    foreach (var item2 in filteredDocumentsbyFile)
+                                    {
+                                        AttachImageToPdf(request, imageextension, isBase64, timestamp_export, documentLayout, item2.Document, item2.Images);
+
+                                    }
+
+                                    documentLayout.Save(outputPath);
+
+
+                                }
+
+
 
                             }
                             // si c'est pas framework
@@ -1359,13 +1408,13 @@ namespace DataProviders.BatchProvider
                                 filename = item1.doctype.pdf_name;
 
 
-                                string Documentfolder = Path.Combine(Folder, ReplaceChars(item.FileNumber), ReplaceChars(item1.doctype.folder_name));
+                                string Documentfolder = Path.Combine(FolderForProject, ReplaceChars(item.FileNumber), ReplaceChars(item1.doctype.folder_name));
 
                                 string outputPath = Path.Combine(Documentfolder, $"{filename}.pdf");
 
 
 
-                                if (item1.docfolio.Folios.Contains("PF"))
+                                /*if (item1.docfolio.Folios.Contains("PF"))
                                 {
                                     string firstDocFolder = Documentfolder;
                                     Documentfolder = Documentfolder + " PF";
@@ -1384,7 +1433,7 @@ namespace DataProviders.BatchProvider
 
                                 }
                                 else
-                                {
+                                {*/
                                     if (!Directory.Exists(Documentfolder))
                                     {
                                         Directory.CreateDirectory(Documentfolder); // Crée le dossier si nécessaire
@@ -1399,7 +1448,7 @@ namespace DataProviders.BatchProvider
                                         outputPath = Path.Combine(Documentfolder, $"{filename}_{compteur}.pdf");
                                         compteur++;
                                     }
-                                }
+                                //}
 
 
 
@@ -1427,60 +1476,7 @@ namespace DataProviders.BatchProvider
 
                                     foreach (var item2 in filteredDocumentsbyFile)
                                     {
-                                        var document = item2.Document;
-                                        var images = item2.Images;
-
-                                        document.ExportStatus = 1;
-                                        document.ExportOn = timestamp_export;
-
-                                        // Gestion des images RECTO et VERSO
-                                        var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
-                                        var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO");
-
-                                        string pathRecto = imageRecto?.Path ?? string.Empty;
-                                        string pathVerso = imageVerso?.Path ?? string.Empty;
-
-                                        string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
-                                        string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
-
-                                        string recto = pathRecto;
-                                        string verso = pathVerso;
-
-                                        if (isBase64 == 1)
-                                        {
-                                            recto = imageContentStr;
-                                            verso = imageVersoContentStr;
-
-                                            byte[] imageBytesrecto = Convert.FromBase64String(recto);
-                                            byte[] imageBytesverso = Convert.FromBase64String(verso);
-
-                                            if (imageBytesrecto.Length > 0)
-                                            {
-                                                AddImage(documentLayout, imageBytesrecto);
-
-                                            }
-
-                                            if (imageBytesverso.Length > 0)
-                                            {
-                                                AddImage(documentLayout, imageBytesverso);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            string webRootPath = request.webhostEnvironment.WebRootPath;
-
-
-                                            if (!string.IsNullOrEmpty(recto))
-                                            {
-                                                AddImagePath(documentLayout, recto, webRootPath);
-                                            }
-
-                                            if (!string.IsNullOrEmpty(verso))
-                                            {
-                                                AddImagePath(documentLayout, verso, webRootPath);
-
-                                            }
-                                        }
+                                        AttachImageToPdf(request, imageextension, isBase64, timestamp_export, documentLayout, item2.Document , item2.Images);
 
                                     }
 
@@ -1508,6 +1504,62 @@ namespace DataProviders.BatchProvider
             }
 
 
+        }
+
+        private static void AttachImageToPdf(BatchSearchRequest request, string? imageextension, int? isBase64, DateTime timestamp_export, PdfDocument documentLayout, Document document , List<Image> images)
+        {
+
+            document.ExportStatus = 1;
+            document.ExportOn = timestamp_export;
+
+            // Gestion des images RECTO et VERSO
+            var imageRecto = images.FirstOrDefault(x => x.Side == "RECTO");
+            var imageVerso = images.FirstOrDefault(x => x.Side == "VERSO");
+
+            string pathRecto = imageRecto?.Path ?? string.Empty;
+            string pathVerso = imageVerso?.Path ?? string.Empty;
+
+            string imageContentStr = imageRecto == null ? string.Empty : $"data:image/{imageextension};base64,{imageRecto.ImageToBase64String}";
+            string imageVersoContentStr = imageVerso == null ? string.Empty : $"data:image/{imageextension};base64,{imageVerso.ImageToBase64String}";
+
+            string recto = pathRecto;
+            string verso = pathVerso;
+
+            if (isBase64 == 1)
+            {
+                recto = imageContentStr;
+                verso = imageVersoContentStr;
+
+                byte[] imageBytesrecto = Convert.FromBase64String(recto);
+                byte[] imageBytesverso = Convert.FromBase64String(verso);
+
+                if (imageBytesrecto.Length > 0)
+                {
+                    AddImage(documentLayout, imageBytesrecto);
+
+                }
+
+                if (imageBytesverso.Length > 0)
+                {
+                    AddImage(documentLayout, imageBytesverso);
+                }
+            }
+            else
+            {
+                string webRootPath = request.webhostEnvironment.WebRootPath;
+
+
+                if (!string.IsNullOrEmpty(recto))
+                {
+                    AddImagePath(documentLayout, recto, webRootPath);
+                }
+
+                if (!string.IsNullOrEmpty(verso))
+                {
+                    AddImagePath(documentLayout, verso, webRootPath);
+
+                }
+            }
         }
 
         private string ReplaceChars(string fileName)

@@ -1,0 +1,95 @@
+﻿@using Core.UserModels
+@using Microsoft.AspNetCore.Html
+
+
+<link rel="stylesheet" type="text/css" href="/EDMS/css/user_list.css">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">User List</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <form asp-action="Index" asp-controller="User" method="get">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <input type="search" value="@ViewBag.keyword" name="keyword" placeholder="First or Last Name" class="form-control innersearch">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Recherche</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="main-box clearfix">
+                    <div class="table-responsive">
+                        <table class="table user-list">
+                            <thead>
+                                <tr>
+                                    <th><span>User</span></th>
+                                    <th><span>Role</span></th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in (List<CreateUserModel>)ViewBag.users)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="user_icon">
+                                                <span>@user.Icon</span>
+                                            </div>
+                                            <span class="user-link">&nbsp;&nbsp;&nbsp;@user.DisplayName</span>
+                                            <span class="user-subhead">&nbsp;&nbsp;&nbsp;@user.Identifiant</span>
+                                        </td>
+                                        <td>@user.Role</td>
+                                        <td style="width: 20%;">
+                                            <a asp-action="Edit" asp-controller="User" asp-route-step="@(Encryption.Encrypt(21.ToString()))" asp-route-id="@user.Id">
+                                            @* <a href="/Edit?id=@user.Id" class="table-link"> *@
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a href="#" class="table-link danger" onclick="confirmDelete('@user.Id')" id="delete-user-button-@user.Id">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                @(new HtmlString(ViewBag.Pagination))
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/EDMS/js/list-user.js"></script>
+@{
+    if (ViewBag.success != null)
+    {
+        <script type="text/javascript">showSuccess()</script>
+    }
+}

@@ -1,0 +1,131 @@
+﻿@model Core.UserModels.CreateUserModel
+
+@{
+    var bouttonText = "Sauvegarder";
+    var title = "Ajouter un utilisateur";
+    if (Model != null && !string.IsNullOrEmpty(Model.Id))
+    {
+        bouttonText = "Mettre à jour";
+        title = "Modifier un utilisateur";
+    }
+}
+
+@* @section PageScripts
+{
+    <script type="text/javascript">
+        var batchstep = @ViewBag.step;
+    </script>
+    <script type="text/javascript" src="~/dist/js/@(ViewBag.scripts).js"></script>
+} *@
+<style>
+    .login-error-msg {
+        color: red;
+        font-size: 14px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Add User</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                @if (ViewBag.error != null)
+                {
+                    <p style="color: red;">@ViewBag.error</p>
+                }
+                else if (ViewBag.success != null)
+                {
+                    <p style="color: green;">@ViewBag.success</p>
+                }
+
+                @using (Html.BeginForm("SaveUser", "User", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(x => x.Id)
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prénom</label>
+                                @Html.TextBoxFor(m => m.Prenom, new { type = "text", @class = "form-control" })
+                            </div>
+                            <div class="input-group mb-2">
+                                @Html.ValidationMessageFor(model => model.Prenom, "", new { @class = "login-error-msg" })
+                            </div>
+                            <div class="form-group">
+                                <label>Nom de famille</label>
+                                @Html.TextBoxFor(m => m.NomDeFamille, new { type = "text", @class = "form-control" })
+                            </div>
+                            <div class="input-group mb-2">
+                                @Html.ValidationMessageFor(model => model.NomDeFamille, "", new { @class = "login-error-msg" })
+                            </div>
+                            <div class="form-group">
+                                <label>Nom d'utilisateur / Identifiant</label>
+                                @Html.TextBoxFor(m => m.Identifiant, new { type = "text", @class = "form-control" })
+                            </div>
+                            <div class="input-group mb-2">
+                                @Html.ValidationMessageFor(model => model.Identifiant, "", new { @class = "login-error-msg" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @if (Model?.Id != null)
+                                {
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.UpdatePassword, new { onchange = "changePassword()" })
+                                        Changer le mot de passe
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Password, new { type = "password", @class = "form-control pwd", disabled = "disabled", @readonly = "readonly" })
+                                }
+                                else
+                                {
+                                    <label>Mot de passe</label>
+                                    @Html.TextBoxFor(m => m.Password, new { type = "password", @class = "form-control pwd" })
+                                }
+                            </div>
+                            <div class="input-group mb-2">
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "login-error-msg" })
+                            </div>
+                            <div class="form-group">
+                                <label>Rôle</label>
+                                @Html.DropDownListFor(model => model.Role, new SelectList(ViewBag.Roles, "Id", "Name", Model?.Role), "Choisir un rôle", new { @class = "form-control" })
+                            </div>
+                            <div class="input-group mb-2">
+                                @Html.ValidationMessageFor(model => model.Role, "", new { @class = "login-error-msg" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <input type="submit" class="btn-primary form-control" value="@bouttonText">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function changePassword() {
+        const passwordInput = document.getElementById('Password');
+        const changePwdChk = document.getElementById('UpdatePassword');
+        if (passwordInput && changePwdChk) 
+        {
+            passwordInput.value = '';
+            if (changePwdChk.checked) {
+                passwordInput.removeAttribute('readonly');
+                passwordInput.removeAttribute('disabled');
+            }
+            else {
+                passwordInput.setAttribute('readonly', 'readonly');
+                passwordInput.setAttribute('disabled', 'disabled');
+            }
+        }
+    }
+</script>

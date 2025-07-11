@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\EDMS2025.props" />
+</Project>

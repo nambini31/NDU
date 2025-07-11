@@ -1,0 +1,169 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\views\\edms\\indexvalue.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\views\\edms\\indexvalue.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\wwwroot\\edms\\js\\global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\wwwroot\\edms\\js\\global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA287B82-6C7D-4E42-960E-A7DE47A3DBD4}|DataProviders\\DataProviders.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\dataproviders\\documentprovider\\documentdataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA287B82-6C7D-4E42-960E-A7DE47A3DBD4}|DataProviders\\DataProviders.csproj|solutionrelative:dataproviders\\documentprovider\\documentdataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA287B82-6C7D-4E42-960E-A7DE47A3DBD4}|DataProviders\\DataProviders.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\dataproviders\\batchprovider\\batchdataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA287B82-6C7D-4E42-960E-A7DE47A3DBD4}|DataProviders\\DataProviders.csproj|solutionrelative:dataproviders\\batchprovider\\batchdataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\views\\edms\\tbodydetailbatch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\views\\edms\\tbodydetailbatch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\views\\edms\\tbodydocumentreviewmodificationsearch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\views\\edms\\tbodydocumentreviewmodificationsearch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\wwwroot\\edms\\js\\detailbatch.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\wwwroot\\edms\\js\\detailbatch.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4291B85-4825-4B33-BD90-2280B7FC0385}|Services\\Services.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\services\\documentservice\\documentappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4291B85-4825-4B33-BD90-2280B7FC0385}|Services\\Services.csproj|solutionrelative:services\\documentservice\\documentappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|c:\\users\\nico\\source\\repos\\nambini31\\ndu\\edms2025\\controllers\\edmscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{48167021-3C8A-4BAD-9852-D88863DBA489}|EDMS2025\\EDMS2025.csproj|solutionrelative:edms2025\\controllers\\edmscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "global.js",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\wwwroot\\EDMS\\js\\global.js",
+              "RelativeDocumentMoniker": "EDMS2025\\wwwroot\\EDMS\\js\\global.js",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\wwwroot\\EDMS\\js\\global.js",
+              "RelativeToolTip": "EDMS2025\\wwwroot\\EDMS\\js\\global.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-11T04:40:32.663Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BatchDataProvider.cs",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\DataProviders\\BatchProvider\\BatchDataProvider.cs",
+              "RelativeDocumentMoniker": "DataProviders\\BatchProvider\\BatchDataProvider.cs",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\DataProviders\\BatchProvider\\BatchDataProvider.cs",
+              "RelativeToolTip": "DataProviders\\BatchProvider\\BatchDataProvider.cs",
+              "ViewState": "AgIAAAMEAAAAAAAAAAAqwMcEAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-10T09:29:41.746Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TbodyDetailBatch.cshtml",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\TbodyDetailBatch.cshtml",
+              "RelativeDocumentMoniker": "EDMS2025\\Views\\EDMS\\TbodyDetailBatch.cshtml",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\TbodyDetailBatch.cshtml",
+              "RelativeToolTip": "EDMS2025\\Views\\EDMS\\TbodyDetailBatch.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACAAAABpAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-09T15:18:15.849Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "TbodyDocumentReviewModificationSearch.cshtml",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\TbodyDocumentReviewModificationSearch.cshtml",
+              "RelativeDocumentMoniker": "EDMS2025\\Views\\EDMS\\TbodyDocumentReviewModificationSearch.cshtml",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\TbodyDocumentReviewModificationSearch.cshtml",
+              "RelativeToolTip": "EDMS2025\\Views\\EDMS\\TbodyDocumentReviewModificationSearch.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-09T15:17:01.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DocumentAppService.cs",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\Services\\DocumentService\\DocumentAppService.cs",
+              "RelativeDocumentMoniker": "Services\\DocumentService\\DocumentAppService.cs",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\Services\\DocumentService\\DocumentAppService.cs",
+              "RelativeToolTip": "Services\\DocumentService\\DocumentAppService.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAIAwwDYAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-09T10:41:56.638Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "EDMSController.cs",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Controllers\\EDMSController.cs",
+              "RelativeDocumentMoniker": "EDMS2025\\Controllers\\EDMSController.cs",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Controllers\\EDMSController.cs",
+              "RelativeToolTip": "EDMS2025\\Controllers\\EDMSController.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAowKcAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-09T10:41:45.73Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DocumentDataProvider.cs",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\DataProviders\\DocumentProvider\\DocumentDataProvider.cs",
+              "RelativeDocumentMoniker": "DataProviders\\DocumentProvider\\DocumentDataProvider.cs",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\DataProviders\\DocumentProvider\\DocumentDataProvider.cs",
+              "RelativeToolTip": "DataProviders\\DocumentProvider\\DocumentDataProvider.cs",
+              "ViewState": "AgIAAAwFAAAAAAAAAAA3wBQFAABjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-09T10:21:46.34Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "detailbatch.js",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\wwwroot\\EDMS\\js\\detailbatch.js",
+              "RelativeDocumentMoniker": "EDMS2025\\wwwroot\\EDMS\\js\\detailbatch.js",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\wwwroot\\EDMS\\js\\detailbatch.js",
+              "RelativeToolTip": "EDMS2025\\wwwroot\\EDMS\\js\\detailbatch.js",
+              "ViewState": "AgIAALkBAAAAAAAAAAAAAL8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-09T10:13:31.488Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IndexValue.cshtml",
+              "DocumentMoniker": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\IndexValue.cshtml",
+              "RelativeDocumentMoniker": "EDMS2025\\Views\\EDMS\\IndexValue.cshtml",
+              "ToolTip": "C:\\Users\\NICO\\source\\repos\\nambini31\\NDU\\EDMS2025\\Views\\EDMS\\IndexValue.cshtml",
+              "RelativeToolTip": "EDMS2025\\Views\\EDMS\\IndexValue.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-09T06:36:04.44Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

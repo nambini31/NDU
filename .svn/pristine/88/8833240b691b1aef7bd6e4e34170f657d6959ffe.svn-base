@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = SAIM.Core.Utilities
+build_property.ProjectDir = C:\Users\NICO\source\repos\nambini31\NDU\SAIM.Core.Utilities\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 
