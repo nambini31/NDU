@@ -8,9 +8,17 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\bower_components\**" />
+    <Compile Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.110214.8767\**" />
+    <Compile Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.145442.8993\**" />
     <Content Remove="wwwroot\bower_components\**" />
+    <Content Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.110214.8767\**" />
+    <Content Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.145442.8993\**" />
     <EmbeddedResource Remove="wwwroot\bower_components\**" />
+    <EmbeddedResource Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.110214.8767\**" />
+    <EmbeddedResource Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.145442.8993\**" />
     <None Remove="wwwroot\bower_components\**" />
+    <None Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.110214.8767\**" />
+    <None Remove="wwwroot\dist\img\NDUSCAN\DOC.PC04-250519.145442.8993\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1066,8 +1074,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\dist\img\PoliceScan\DOC.PC04-250519.110214.8767\" />
-    <Folder Include="wwwroot\dist\img\PoliceScan\DOC.PC04-250519.145442.8993\" />
+    <Folder Include="wwwroot\dist\img\NDUSCAN\" />
     <Folder Include="wwwroot\plugins\chosen\" />
   </ItemGroup>
 
