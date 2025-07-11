@@ -1238,8 +1238,8 @@ namespace DataProviders.BatchProvider
                                                  doctype = docType,
                                                  docfolio = docFolio,
                                                  Document = d,
-                                                 f.FileTypeId,
-                                                 f.Id,
+                                                 f,
+                                                 
                                                  f.IsFramework,
                                                  IndexModels = exorabilisContext.DocumentIndex.Where(x => x.DocumentId == d.Id).ToList(),
                                                  Images = exorabilisContext.Image
@@ -1249,10 +1249,10 @@ namespace DataProviders.BatchProvider
 
 
                     var resultforexcelandexportbyBatch = filteredDocuments
-                    .GroupBy(x => x.Id) // Grouper par FileId
+                    .GroupBy(x => x.f.Id) // Grouper par FileId
                     .Select(group =>
                     {
-                        var isSingle = group.First().FileTypeId == 1;
+                        var isSingle = group.First().f.FileTypeId == 1;
                         return isSingle
                             ? group // Récupérer tous les documents si single
                             : group.Take(1); // Récupérer un seul document si multi
@@ -1366,12 +1366,12 @@ namespace DataProviders.BatchProvider
                                 }
 
 
-                                if (item1.FileTypeId == 2)
+                                if (item1.f.FileTypeId == 2)
                                 {
                                     var filteredDocumentsbyFile = (from d in exorabilisContext.Document
                                                                    join f in exorabilisContext.Files on d.FileId equals f.Id
                                                                    join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
-                                                                   where d.FileId == item1.Id && ir.Status == 1
+                                                                   where d.FileId == item1.f.Id && ir.Status == 1
                                                                          && docstep.Contains(d.DocumentStepId.Value)
                                                                          && docstatus.Contains(d.DocumentStatusId.Value)
                                                                          && doctype.Contains(d.DocumentTypeId.Value)
@@ -1393,7 +1393,7 @@ namespace DataProviders.BatchProvider
                                         AttachImageToPdf(request, imageextension, isBase64, timestamp_export, documentLayout, item2.Document, item2.Images);
 
                                     }
-
+                                    item1.f.PageNumber = filteredDocumentsbyFile.Count();
                                     documentLayout.Save(outputPath);
 
 
@@ -1452,12 +1452,12 @@ namespace DataProviders.BatchProvider
 
 
 
-                                if (item1.FileTypeId == 2)
+                                if (item1.f.FileTypeId == 2)
                                 {
                                     var filteredDocumentsbyFile = (from d in exorabilisContext.Document
                                                                    join f in exorabilisContext.Files on d.FileId equals f.Id
                                                                    join ir in exorabilisContext.Image on d.Id equals ir.DocumentId
-                                                                   where d.FileId == item1.Id && ir.Status == 1
+                                                                   where d.FileId == item1.f.Id && ir.Status == 1
                                                                          && docstep.Contains(d.DocumentStepId.Value)
                                                                          && docstatus.Contains(d.DocumentStatusId.Value)
                                                                          && doctype.Contains(d.DocumentTypeId.Value)
@@ -1480,6 +1480,7 @@ namespace DataProviders.BatchProvider
 
                                     }
 
+                                    item1.f.PageNumber = filteredDocumentsbyFile.Count();
                                     documentLayout.Save(outputPath);
 
 
@@ -2429,7 +2430,7 @@ namespace DataProviders.BatchProvider
 
                 await this.exorabilisContext.SaveChangesAsync();
 
-                //transaction.Commit();
+                transaction.Commit();
 
                 return response;
             }

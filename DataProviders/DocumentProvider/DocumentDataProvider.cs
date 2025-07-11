@@ -1779,6 +1779,9 @@ namespace DataProviders.DocumentProvider
 
                                     document.LastStep = "Rescan";
 
+                                    var image = this.exorabilisContext.Image.Where(x => x.DocumentId == multiDocument.Id).FirstOrDefault();
+                                    image.Status = 0;
+
                                     //batch.NumberOfDocument -= 1;
                                     //batch.RescanBy = UserName;
                                     //batch.RescanOn = DateTime.Now;
@@ -1801,6 +1804,9 @@ namespace DataProviders.DocumentProvider
                             batch.RescanBy = UserName;
                             batch.RescanOn = DateTime.Now;
                             batch.LastStep = "Rescan";
+
+                            var image = this.exorabilisContext.Image.Where(x => x.DocumentId == document.Id).FirstOrDefault();
+                            image.Status = 0;
 
                         }
 

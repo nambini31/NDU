@@ -9,6 +9,7 @@ namespace Core.Entity.Exorabilis
 
         public long Id { get; set; }
         public int? IsFramework { get; set; }
+        public int? PageNumber { get; set; }
         public long? Project_folio_id { get; set; }
         public long? BatchId { get; set; }
         public long? FileTypeId { get; set; }

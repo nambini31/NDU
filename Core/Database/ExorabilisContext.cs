@@ -969,6 +969,8 @@ namespace Core.Database
 
                 entity.Property(e => e.IsFramework);
 
+                entity.Property(e => e.PageNumber);
+
                 entity.Property(e => e.FileTypeId)
                     .HasColumnType("bigint(20)")
                     .HasDefaultValueSql("NULL");
